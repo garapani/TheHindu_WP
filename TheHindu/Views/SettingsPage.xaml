@@ -1,0 +1,223 @@
+﻿<phone:PhoneApplicationPage x:Class="TheHindu.Views.SettingsPage"
+                            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                            xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+                            xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+                            xmlns:converter="clr-namespace:TheHindu.Converters"
+                            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                            xmlns:controls="clr-namespace:TheHindu.Controls"
+                            xmlns:conv="clr-namespace:TheHindu.Converters"
+                            DataContext="{Binding SettingsViewModel, Source={StaticResource Locator}}"
+                            mc:Ignorable="d"
+                            d:DesignHeight="800"
+                            d:DesignWidth="480" Margin="0,2,0,-2">
+
+    <phone:PhoneApplicationPage.Resources>
+        <converter:VisibilityConverter x:Key="VisibilityConverter" />
+        <conv:FontSizePercantageToWinPhoneConverter x:Key="FontSizeConv" />
+        <Style x:Key="GridStyle"
+           TargetType="Grid">
+        </Style>
+
+        <Style x:Key="CheckBoxStyle"
+           TargetType="CheckBox">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <Grid Background="Transparent">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal" />
+                                    <VisualState x:Name="MouseOver" />
+                                    <VisualState x:Name="Pressed">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckBackground"
+                                                     Storyboard.TargetProperty="Background">
+                                                <DiscreteObjectKeyFrame KeyTime="0"
+                                                Value="White" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckBackground"
+                                                     Storyboard.TargetProperty="BorderBrush">
+                                                <DiscreteObjectKeyFrame KeyTime="0"
+                                                Value="White" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckMark"
+                                                     Storyboard.TargetProperty="Fill">
+                                                <DiscreteObjectKeyFrame KeyTime="0"
+                                                Value="White" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="IndeterminateMark"
+                                                     Storyboard.TargetProperty="Fill">
+                                                <DiscreteObjectKeyFrame KeyTime="0"
+                                                Value="White" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                                <VisualStateGroup x:Name="CheckStates">
+                                    <VisualState x:Name="Checked">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckMark"
+                                                     Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0">
+                                                    <DiscreteObjectKeyFrame.Value>
+                                                        <Visibility>Visible</Visibility>
+                                                    </DiscreteObjectKeyFrame.Value>
+                                                </DiscreteObjectKeyFrame>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Unchecked" />
+                                    <VisualState x:Name="Indeterminate">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="IndeterminateMark"
+                                                     Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0">
+                                                    <DiscreteObjectKeyFrame.Value>
+                                                        <Visibility>Visible</Visibility>
+                                                    </DiscreteObjectKeyFrame.Value>
+                                                </DiscreteObjectKeyFrame>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="32" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Border x:Name="CheckBackground"
+                        IsHitTestVisible="False"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Left"
+                        Background="{StaticResource HinduBrush}"
+                        BorderBrush="{StaticResource HinduBrush}"
+                        Height="32"
+                        Width="32" />
+                                <Rectangle x:Name="IndeterminateMark"
+                           IsHitTestVisible="False"
+                           Width="16"
+                           Height="16"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Visibility="Collapsed"
+                           Grid.Row="0" />
+                                <Path x:Name="CheckMark"
+                      IsHitTestVisible="False"
+                      Visibility="Collapsed"
+                      Width="24"
+                      Height="18"
+                      Stretch="Fill"
+                      Fill="{StaticResource PhoneForegroundBrush}"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      Data="M0,119 L31,92 L119,185 L267,0 L300,24 L122,250 z"
+                      StrokeLineJoin="Round"
+                      StrokeThickness="2" />
+                                <ContentControl x:Name="ContentContainer"
+                                Grid.Column="1"
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                Margin="12,0,0,0"
+                                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                Padding="{TemplateBinding Padding}" />
+                                <!--Foreground="{TemplateBinding Foreground}"-->
+                            </Grid>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </phone:PhoneApplicationPage.Resources>
+
+    <Grid Background="{Binding Source={StaticResource Settings}, Path=SelectedBackground}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,-2,0,0">
+            <Border Background="{StaticResource HinduBrush}">
+                <TextBlock Text="THE HINDU" FontSize="{StaticResource PhoneFontSizeNormal}" Foreground="White" />
+            </Border>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1"
+                DataContext="{Binding Settings}"
+                Margin="24,25">
+
+            <CheckBox IsChecked="{Binding IsDownloadingArticlesOffline, Mode=TwoWay}"
+                Margin="0,0,0,12"
+                Style="{StaticResource CheckBoxStyle}">
+
+                <TextBlock Foreground="{Binding Source={StaticResource Settings}, Path=SelectedForeground}" Text="Periodically download articles in the background if the Internet connection available"
+                   TextWrapping="Wrap" />
+            </CheckBox>
+
+            <CheckBox IsChecked="{Binding IsToastNotificationUsed, Mode=TwoWay}"
+                Margin="0,12"
+                Style="{StaticResource CheckBoxStyle}"
+                Visibility="{Binding IsDownloadingArticlesOffline, Converter={StaticResource VisibilityConverter}}">
+
+                <TextBlock Foreground="{Binding Source={StaticResource Settings}, Path=SelectedForeground}" Text="Show toast notification when new articles are available"
+                   TextWrapping="Wrap" />
+            </CheckBox>
+
+            <CheckBox x:Name="LiveTileSupport" IsChecked="{Binding IsLiveTileSupport, Mode=TwoWay}"
+                Margin="0,12"
+                Style="{StaticResource CheckBoxStyle}"
+                Visibility="{Binding IsDownloadingArticlesOffline, Converter={StaticResource VisibilityConverter}}" Checked="LiveTileSupport_Checked">
+
+                <TextBlock Foreground="{Binding Source={StaticResource Settings}, Path=SelectedForeground}" Text="Live tile"
+                   TextWrapping="Wrap" />
+            </CheckBox>
+
+            <CheckBox IsChecked="{Binding IsQuietHoursUsed, Mode=TwoWay}"
+                Margin="0,12"
+                Style="{StaticResource CheckBoxStyle}"
+                Visibility="{Binding IsDownloadingArticlesOffline, Converter={StaticResource VisibilityConverter}}" Checked="CheckBox_Checked">
+
+                <TextBlock Foreground="{Binding Source={StaticResource Settings}, Path=SelectedForeground}" Text="Quiet Hours (No notifications)"
+                   TextWrapping="Wrap" />
+            </CheckBox>
+
+            <Grid Visibility="{Binding IsQuietHoursUsed, Converter={StaticResource VisibilityConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <toolkit:TimePicker x:Name="StartTime" Grid.Column="0" FontSize="{StaticResource PhoneFontSizeMedium}" Foreground="{Binding Source={StaticResource Settings},Path=SelectedForeground}" BorderBrush="{Binding Source={StaticResource Settings},Path=SelectedForeground}" Value="{Binding QuietHoursStartTime, Mode=TwoWay}">
+                    <toolkit:TimePicker.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="start time" FontSize="{StaticResource PhoneFontSizeMedium}" Foreground="{Binding Source={StaticResource Settings}, Path=SelectedForeground}" />
+                        </DataTemplate>
+                    </toolkit:TimePicker.HeaderTemplate>
+                </toolkit:TimePicker>
+
+                <toolkit:TimePicker x:Name="EndTime" Grid.Column="1" FontSize="{StaticResource PhoneFontSizeMedium}" Foreground="{Binding Source={StaticResource Settings},Path=SelectedForeground}" BorderBrush="{Binding Source={StaticResource Settings},Path=SelectedForeground}" Value="{Binding QuietHoursEndTime, Mode=TwoWay}">
+                    <toolkit:TimePicker.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="end time" FontSize="{StaticResource PhoneFontSizeMedium}" Foreground="{Binding Source={StaticResource Settings}, Path=SelectedForeground}" />
+                        </DataTemplate>
+                    </toolkit:TimePicker.HeaderTemplate>
+                </toolkit:TimePicker>
+            </Grid>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Theme:" Foreground="{Binding Source={StaticResource Settings},Path=SelectedForeground}" Grid.Column="0" FontSize="{StaticResource PhoneFontSizeMedium}" VerticalAlignment="Center" />
+                <Button Content="dark" Grid.Column="1" Foreground="{Binding Source={StaticResource Settings},Path=SelectedForeground}" Background="Transparent" BorderBrush="Transparent" FontSize="{StaticResource PhoneFontSizeMedium}" x:Name="BtnDark" Click="btnDark_Click" />
+                <Button Content="light" Grid.Column="2" Foreground="{Binding Source={StaticResource Settings},Path=SelectedForeground}" Background="Transparent" BorderBrush="Transparent" FontSize="{StaticResource PhoneFontSizeMedium}" x:Name="BtnLight" Click="btnLight_Click" />
+            </Grid>
+        </StackPanel>
+    </Grid>
+</phone:PhoneApplicationPage>

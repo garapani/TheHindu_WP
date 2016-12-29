@@ -1,0 +1,210 @@
+﻿<phone:PhoneApplicationPage xmlns:ui="clr-namespace:Microsoft.Advertising.Mobile.UI;assembly=Microsoft.Advertising.Mobile.UI"  x:Class="TheHindu.Views.BreakingNewsArticlesPage"
+                            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                            xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+                            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                            xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+                            xmlns:mytoolkit="clr-namespace:MyToolkit.Controls;assembly=MyToolkit.Extended"
+                            xmlns:appBarUtils="clr-namespace:AppBarUtils;assembly=AppBarUtils"
+                            xmlns:converter="clr-namespace:TheHindu.Converters"
+                            xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+                            xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+                            xmlns:windowsPhone8="clr-namespace:Microsoft.AdMediator.WindowsPhone8;assembly=Microsoft.AdMediator.WindowsPhone8"
+                            DataContext="{Binding ArticleViewModel, Source={StaticResource Locator}}"
+                            mc:Ignorable="d"
+                            d:DesignHeight="728"
+                            d:DesignWidth="480" Background="{Binding Source={StaticResource Settings},Path=SelectedBackground}">
+
+    <phone:PhoneApplicationPage.Resources>
+        <converter:IsStringNotNullConveter x:Key="IsStringNotNullConverter" />
+        <converter:BooleanToCollapseConverter x:Key="BooleanToCollapseConverter" />
+        <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <Style TargetType="ScrollBar">
+            <Setter Property="Background" Value="SteelBlue" />
+            <Setter Property="Foreground" Value="SteelBlue" />
+            <Setter Property="BorderBrush" Value="SteelBlue" />
+        </Style>
+    </phone:PhoneApplicationPage.Resources>
+
+    <Grid Margin="0,0,0,-1" Background="{Binding Source={StaticResource Settings},Path=SelectedBackground}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Background="{StaticResource HinduBrush}">
+            <TextBlock Text="THE HINDU" FontSize="{StaticResource PhoneFontSizeMedium}" HorizontalAlignment="Left" Foreground="White" />
+        </StackPanel>
+        <StackPanel x:Name="Progress" Grid.Row="1" Visibility="{Binding IsFetchingArticle, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,200,0,0">
+
+            <TextBlock Foreground="Gray" TextAlignment="Center"
+                   Text="Loading..."  FontSize="{StaticResource PhoneFontSizeMediumLarge}" />
+
+            <ProgressBar IsIndeterminate="true" Foreground="{StaticResource HinduBrush}"
+                                        Margin="24,20" Width="480" />
+        </StackPanel>
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0" Visibility="{Binding IsFetchingArticle, Converter={StaticResource BooleanToCollapseConverter}}" Tap="ContentPanel_Tap">
+            <phone:Pivot x:Name="PivotControl" SelectionChanged="Pivot_SelectionChanged">
+                <phone:PivotItem x:Name="OnePivot" ScrollViewer.HorizontalScrollBarVisibility="Auto" Margin="0,-5,0,0" DataContext="{Binding Article}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <ScrollViewer Grid.Row="0" x:Name="ScrollViewer" Foreground="AliceBlue" VerticalAlignment="Top" VerticalScrollBarVisibility="Visible" HorizontalAlignment="Left" HorizontalScrollBarVisibility="Disabled" AllowDrop="False">
+                            <StackPanel>
+                                <TextBlock Text="{Binding Title}" x:Name="HeadLine" Foreground="{StaticResource HinduBrush}" TextWrapping="Wrap" FontWeight="SemiBold" FontSize="{Binding Source={StaticResource Settings},Path=FontSize}" Margin="2,5,0,2" />
+                                <TextBlock Text="{Binding Author}" x:Name="DateDescription" Foreground="Gray" HorizontalAlignment="Right" TextWrapping="Wrap" FontSize="{StaticResource PhoneFontSizeSmall}" />
+
+                                <Image Margin="0,2,2,0" Visibility="{Binding HdThumbnail,
+                                    Converter={StaticResource IsStringNotNullConverter}}" toolkit:TiltEffect.IsTiltEnabled="True" Tap="Image_Tap">
+                                    <Image.Source>
+                                        <BitmapImage UriSource="{Binding HdThumbnail}" DecodePixelType="Logical" DecodePixelWidth="300" CreateOptions="BackgroundCreation" />
+                                    </Image.Source>
+                                </Image>
+                                <TextBlock Text="{Binding ThumbnailDescription}" x:Name="PhotoCaption" Foreground="Gray" TextWrapping="Wrap" Margin="2" FontSize="{StaticResource PhoneFontSizeSmall}" />
+                                <mytoolkit:FixedHtmlTextBlock Html="{Binding FullDescription}" x:Name="Story" Foreground="{Binding Source={StaticResource Settings }, Path=SelectedForeground}" Margin="2,5,2,80" FontSize="{Binding Source={StaticResource Settings},Path=FontSize}" />
+                            </StackPanel>
+                        </ScrollViewer>
+                        <windowsPhone8:AdMediatorControl x:Name="BreakingNewsPivot1Ad" Id="AdMediator-Id-756951FC-68D6-4120-AADB-D169A7AAB7A9" Width="320" Height="50" HorizontalAlignment="Center" VerticalAlignment="Bottom" />
+                        <StackPanel Grid.Row="1" />
+                    </Grid>
+                </phone:PivotItem>
+                <phone:PivotItem x:Name="SecondPivot" ScrollViewer.HorizontalScrollBarVisibility="Auto" Margin="0,-5,0,0" DataContext="{Binding Article}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <ScrollViewer Grid.Row="0" Foreground="AliceBlue" VerticalAlignment="Top" VerticalScrollBarVisibility="Visible" HorizontalAlignment="Left" HorizontalScrollBarVisibility="Disabled" AllowDrop="False" x:Name="SecondScrollBar">
+                            <StackPanel>
+                                <TextBlock Text="{Binding Title}" x:Name="SecondPivotHeadLine"  Foreground="{StaticResource HinduBrush}" TextWrapping="Wrap" FontWeight="SemiBold" FontSize="{Binding Source={StaticResource Settings},Path=FontSize}" Margin="2,5,0,2" />
+                                <TextBlock Text="{Binding Author}" x:Name="SecondPivotDateDescription" Foreground="Gray" HorizontalAlignment="Right" TextWrapping="Wrap" FontSize="{StaticResource PhoneFontSizeSmall}" />
+                                <Image Margin="0,2,2,0" Visibility="{Binding HdThumbnail, Converter={StaticResource IsStringNotNullConverter}}" toolkit:TiltEffect.IsTiltEnabled="True" Tap="Image_Tap">
+                                    <Image.Source>
+                                        <BitmapImage UriSource="{Binding HdThumbnail}" CreateOptions="BackgroundCreation" DecodePixelWidth="300"  DecodePixelType="Logical" />
+                                    </Image.Source>
+                                </Image>
+                                <TextBlock Text="{Binding ThumbnailDescription}" x:Name="SecondPivotPhotoCaption"  Foreground="Gray" TextWrapping="Wrap" Margin="2" FontSize="{StaticResource PhoneFontSizeSmall}" />
+                                <mytoolkit:FixedHtmlTextBlock Html="{Binding FullDescription}" x:Name="SecondPivotStory" Foreground="{Binding Source={StaticResource Settings }, Path=SelectedForeground}" Margin="2,5,2,80" FontSize="{Binding Source={StaticResource Settings},Path=FontSize}" />
+                            </StackPanel>
+                        </ScrollViewer>
+                        <windowsPhone8:AdMediatorControl x:Name="BreakingNewsPivot2Ad" Id="AdMediator-Id-569C56EC-C404-4E6C-99E4-A232BF8CA7E8" Width="320" Height="50" HorizontalAlignment="Center" VerticalAlignment="Bottom" />
+                        <StackPanel Grid.Row="1" />
+                    </Grid>
+                </phone:PivotItem>
+
+                <phone:PivotItem x:Name="ThirdPivot" ScrollViewer.HorizontalScrollBarVisibility="Auto" Margin="0,-5,0,0" DataContext="{Binding Article}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <ScrollViewer Grid.Row="0" Foreground="AliceBlue" VerticalAlignment="Top" VerticalScrollBarVisibility="Visible" HorizontalAlignment="Left" HorizontalScrollBarVisibility="Disabled" AllowDrop="False" x:Name="ThirdScrollBar">
+                            <StackPanel>
+                                <TextBlock Text="{Binding Title}" x:Name="ThirdPivotHeadLine" Foreground="{StaticResource HinduBrush}" TextWrapping="Wrap" FontWeight="SemiBold" FontSize="{Binding Source={StaticResource Settings},Path=FontSize}" Margin="2,5,0,2" />
+                                <TextBlock Text="{Binding Author}" x:Name="ThirdPivotDateDescription" Foreground="Gray" HorizontalAlignment="Right" TextWrapping="Wrap" FontSize="{StaticResource PhoneFontSizeSmall}" />
+                                <Image Margin="0,2,2,0" Visibility="{Binding HdThumbnail, Converter={StaticResource IsStringNotNullConverter}}" toolkit:TiltEffect.IsTiltEnabled="True" Tap="Image_Tap">
+                                    <Image.Source>
+                                        <BitmapImage UriSource="{Binding HdThumbnail}" CreateOptions="BackgroundCreation" DecodePixelWidth="300"  DecodePixelType="Logical" />
+                                    </Image.Source>
+                                </Image>
+                                <TextBlock Text="{Binding ThumbnailDescription}" x:Name="ThirdPivotPhotoCaption" Foreground="Gray" TextWrapping="Wrap" Margin="2" FontSize="{StaticResource PhoneFontSizeSmall}" />
+                                <mytoolkit:FixedHtmlTextBlock Html="{Binding FullDescription}" x:Name="ThirdPivotStory"  Foreground="{Binding Source={StaticResource Settings }, Path=SelectedForeground}" Margin="2,5,2,80" FontSize="{Binding Source={StaticResource Settings},Path=FontSize}" />
+                            </StackPanel>
+                        </ScrollViewer>
+                        <windowsPhone8:AdMediatorControl x:Name="BreakingNewsPivot3Ad" Id="AdMediator-Id-A252102C-ECE1-4AA2-9131-B4E1312338B0" Width="320" Height="50" HorizontalAlignment="Center" VerticalAlignment="Bottom" />
+                        <StackPanel Grid.Row="1" />
+                    </Grid>
+                </phone:PivotItem>
+            </phone:Pivot>
+        </Grid>
+        <Grid x:Name="FontStyleSelection" Margin="0" Visibility="Collapsed" Grid.Row="2" Background="{StaticResource HinduBrush}">
+            <StackPanel>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="SIZE" Margin="5,0,0,0" Grid.ColumnSpan="5" Foreground="White" FontSize="{StaticResource PhoneFontSizeSmall}" />
+                    <Button Content="Aa" Grid.Row="1" Foreground="White" Background="Transparent" BorderBrush="Transparent" Grid.Column="0" FontSize="{StaticResource PhoneFontSizeSmall}" x:Name="BtnSmallFont" Click="btnSmallFont_Click" />
+                    <Button Content="Aa" Grid.Row="1" Foreground="White" Background="Transparent" BorderBrush="Transparent" Grid.Column="1" FontSize="{StaticResource PhoneFontSizeNormal}" x:Name="BtnNormalFont" Click="btnNormalFont_Click" />
+                    <Button Content="Aa" Grid.Row="1" Foreground="White" Background="Transparent" BorderBrush="Transparent" Grid.Column="2" FontSize="{StaticResource PhoneFontSizeMedium}" x:Name="BtnMediumFont" Click="btnMediumFont_Click" />
+                    <Button Content="Aa" Grid.Row="1" Foreground="White" Background="Transparent" BorderBrush="Transparent" Grid.Column="3" FontSize="{StaticResource PhoneFontSizeMediumLarge}" x:Name="BtnMediumLargeFont" Click="btnMediumLargeFont_Click" />
+                    <Button Content="Aa" Grid.Row="1" Foreground="White" Background="Transparent" BorderBrush="Transparent" Grid.Column="4" FontSize="{StaticResource PhoneFontSizeLarge}" x:Name="BtnLargeFont" Click="btnLargeFont_Click" />
+                </Grid>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="FONT" Margin="5,0,0,0" Grid.ColumnSpan="5" Foreground="White" FontSize="{StaticResource PhoneFontSizeSmall}" />
+                    <Button Content="arbutusSlab" Grid.Row="1" Foreground="White" Background="Transparent" BorderBrush="Transparent" Grid.Column="0" FontSize="{StaticResource PhoneFontSizeMedium}" x:Name="BtnCalibriFont" Click="btnCalibriFont_Click" />
+                    <Button Content="segoe" Grid.Row="1" Foreground="White" Background="Transparent" BorderBrush="Transparent" Grid.Column="1" FontSize="{StaticResource PhoneFontSizeMedium}" x:Name="BtnSegoeWpFont" Click="btnSegoeWPFont_Click" />
+                    <Button Content="roboto" Grid.Row="1" Foreground="White" Background="Transparent" BorderBrush="Transparent" Grid.Column="2" FontSize="{StaticResource PhoneFontSizeMedium}" x:Name="BtnGeorgia" Click="btnGeorgia_Click" />
+                </Grid>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Theme" Margin="5,0,0,0" Grid.ColumnSpan="5" Foreground="White" FontSize="{StaticResource PhoneFontSizeNormal}" />
+                    <Button Content="dark" Grid.Row="1" Foreground="White" Background="Transparent" BorderBrush="Transparent" Grid.Column="0" FontSize="{StaticResource PhoneFontSizeMedium}" x:Name="BtnBlack" Click="btnBlack_Click" />
+                    <Button Content="light" Grid.Row="1" Foreground="White" Background="Transparent" BorderBrush="Transparent" Grid.Column="1" FontSize="{StaticResource PhoneFontSizeMedium}" x:Name="BtnWhite" Click="btnWhite_Click" />
+                </Grid>
+            </StackPanel>
+        </Grid>
+    </Grid>
+    <phone:PhoneApplicationPage.ApplicationBar>
+        <shell:ApplicationBar ForegroundColor="White" Opacity="1" BackgroundColor="{StaticResource HinduCustomeColor}" Mode="Minimized">
+            <shell:ApplicationBarIconButton IconUri="/Assets/Shares/ie.png" Text="open in ie" />
+            <shell:ApplicationBarIconButton IconUri="/Assets/Shares/paint.png" Text="font style" Click="ApplicationBarIconButton_Click" />
+            <shell:ApplicationBarIconButton IconUri="/Assets/Shares/save.png" Text="save" />
+            <shell:ApplicationBarIconButton IconUri="/Assets/Shares/Share.png" Text="share" />
+            <shell:ApplicationBar.MenuItems>
+                <shell:ApplicationBarMenuItem Text="email article" />
+                <shell:ApplicationBarMenuItem Text="Settings" />
+            </shell:ApplicationBar.MenuItems>
+        </shell:ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>
+
+    <i:Interaction.Behaviors>
+        <appBarUtils:AppBarItemCommand Id="open in ie" Command="{Binding OpenInIeCommand}" />
+
+        <appBarUtils:AppBarItemCommand Id="email article"
+                                       Type="MenuItem"
+                                   Command="{Binding ShareEmailArticleCommand}" />
+
+        <appBarUtils:AppBarItemCommand Id="save"
+                                   Command="{Binding SaveArticleCommand}" />
+
+        <appBarUtils:AppBarItemCommand Id="share"
+                                   Command="{Binding ShareArticleCommand}" />
+
+        <appBarUtils:AppBarItemCommand Command="{Binding ShowSettingsCommand}"
+                                   Id="Settings"
+                                   Type="MenuItem" />
+
+        <appBarUtils:AppBarItemCommand Command="{Binding ShowRateTheappCommand}"
+                                       Id="rate the app"
+                                   Type="MenuItem" />
+    </i:Interaction.Behaviors>
+</phone:PhoneApplicationPage>

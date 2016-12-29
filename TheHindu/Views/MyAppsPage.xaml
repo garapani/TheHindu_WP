@@ -1,0 +1,97 @@
+﻿<phone:PhoneApplicationPage
+    x:Class="TheHindu.Views.MyAppsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    mc:Ignorable="d"
+    shell:SystemTray.IsVisible="False">
+
+    <Grid Background="{Binding Source={StaticResource Settings}, Path=SelectedBackground}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!--TitlePanel contains the name of the application and page title-->
+        <StackPanel Grid.Row="0">
+            <!--<Image Source="/Assets/Icons/logo.jpg" />-->
+            <Border Background="{StaticResource HinduBrush}">
+                <TextBlock Text="The Hindu" Margin="5" FontSize="{StaticResource PhoneFontSizeMedium}" Foreground="White" />
+            </Border>
+            <TextBlock Text="my apps" Margin="10" FontSize="{StaticResource PhoneFontSizeLarge}" Foreground="{StaticResource HinduBrush}" />
+        </StackPanel>
+
+        <ListBox Grid.Row="1" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled" x:Name="Temp1">
+            <ListBox.Items>
+                <ListBoxItem Margin="2" BorderThickness="1" BorderBrush="Gray">
+                    <Grid x:Name="OutlookGrid" Tap="outlookGrid_Tap">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="110" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Image Grid.Column="0" Margin="5" Grid.Row="0" Grid.RowSpan="2" Source="/Assets/Icons/AppLogoOutlook.png" />
+                        <TextBlock Grid.Column="1" Margin="20,5,5,5" Text="Outlook India" Foreground="{Binding Source={StaticResource Settings}, Path=SelectedForeground}" FontSize="{StaticResource PhoneFontSizeMedium}" FontWeight="Bold" />
+                        <TextBlock Grid.Column="1" Margin="20,0,5,5" Grid.Row="1" Foreground="{Binding Source={StaticResource Settings}, Path=SelectedForeground}" Text="Outlook India is a weekly English News magazine published in India. It provides the latest news on politics, cricket, sports, cinema and business news from India." TextWrapping="Wrap" />
+                    </Grid>
+                </ListBoxItem>
+                <ListBoxItem Margin="2" BorderThickness="1" BorderBrush="Gray">
+                    <Grid x:Name="BusinessLineGrid" Tap="businessLineGrid_Tap">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="110" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Image Grid.Column="0" Margin="5" Grid.Row="0" Grid.RowSpan="2" Source="/Assets/Icons/AppLogoBusinessLine.png" />
+                        <TextBlock Grid.Column="1" Margin="20,5,5,5" Text="BusinessLine" Foreground="{Binding Source={StaticResource Settings}, Path=SelectedForeground}" FontSize="{StaticResource PhoneFontSizeMedium}" FontWeight="Bold" />
+                        <TextBlock Grid.Column="1" Margin="20,0,5,5" Grid.Row="1" Foreground="{Binding Source={StaticResource Settings}, Path=SelectedForeground}" Text="Brings to you the latest news on India and international business, stock market, finance, economy, opinion and analysis." TextWrapping="Wrap" />
+                    </Grid>
+                </ListBoxItem>
+                <!--<ListBoxItem Margin="2" BorderThickness="1" BorderBrush="Gray">
+                    <Grid x:Name="TechCrunchGrid" Tap="techCrunchGrid_Tap">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="110" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Image Grid.Column="0" Margin="5" Grid.Row="0" Grid.RowSpan="2" Source="/Assets/Icons/AppLogoTechCrunch.png" />
+                        <TextBlock Grid.Column="1" Margin="20,5,5,5" Text="TechCrunch" Foreground="{Binding Source={StaticResource Settings}, Path=SelectedForeground}" FontSize="{StaticResource PhoneFontSizeMedium}" FontWeight="Bold" />
+                        <TextBlock Grid.Column="1" Margin="20,0,5,5" Grid.Row="1" Foreground="{Binding Source={StaticResource Settings}, Path=SelectedForeground}" Text="TechCrunch is a leading technology media property, dedicated to obsessively profiling startups, reviewing new Internet products, and breaking tech news." TextWrapping="Wrap" />
+                    </Grid>
+                </ListBoxItem>-->
+
+                <ListBoxItem BorderThickness="1" BorderBrush="Gray" Margin="2">
+                    <Grid x:Name="Dailywallpapersgrid" Tap="dailywallpapersgrid_Tap">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="110" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Image Grid.Column="0" Margin="5" Grid.Row="0" Grid.RowSpan="2" Source="/Assets/Icons/AppLogoDailyWallpapers.png" />
+                        <TextBlock Grid.Column="1" Margin="20,5,5,5" Text="DailyWallpapers" Foreground="{Binding Source={StaticResource Settings}, Path=SelectedForeground}" FontSize="{StaticResource PhoneFontSizeMedium}" FontWeight="Bold" />
+                        <TextBlock Grid.Column="1" Margin="20,0,5,5" Grid.Row="1" Foreground="{Binding Source={StaticResource Settings}, Path=SelectedForeground}" Text="This app helps downloading the high quality daily bing wallpapers." TextWrapping="Wrap" />
+                    </Grid>
+                </ListBoxItem>
+            </ListBox.Items>
+        </ListBox>
+    </Grid>
+</phone:PhoneApplicationPage>

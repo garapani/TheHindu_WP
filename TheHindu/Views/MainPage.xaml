@@ -1,0 +1,461 @@
+﻿<phone:PhoneApplicationPage xmlns:ui="clr-namespace:Microsoft.Advertising.Mobile.UI;assembly=Microsoft.Advertising.Mobile.UI"
+                            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                            xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+                            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                            xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
+                            xmlns:controlsPrimitives="clr-namespace:Microsoft.Phone.Controls.Primitives;assembly=Microsoft.Phone.Controls"
+                            xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+                            xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+                            xmlns:codingforFuncontrols="clr-namespace:Coding4Fun.Toolkit.Controls;assembly=Coding4Fun.Toolkit.Controls"
+                            xmlns:appBarUtils="clr-namespace:AppBarUtils;assembly=AppBarUtils"
+                            xmlns:Controls="clr-namespace:TheHindu.Controls"
+                            xmlns:converter="clr-namespace:TheHindu.Converters"
+                            xmlns:primitives="clr-namespace:Microsoft.Phone.Controls.Primitives;assembly=Microsoft.Phone"
+                            xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+                            xmlns:local="clr-namespace:TheHindu.View"
+                            xmlns:windowsPhone8="clr-namespace:Microsoft.AdMediator.WindowsPhone8;assembly=Microsoft.AdMediator.WindowsPhone8"  x:Class="TheHindu.Views.MainPage"
+                            xmlns:helper="clr-namespace:TheHindu.Helper"
+                            mc:Ignorable="d"
+                            d:DesignWidth="480"
+                            d:DesignHeight="800"
+                            DataContext="{Binding MainViewModel, Source={StaticResource Locator}}"
+                            Loaded="PhoneApplicationPageLoaded">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadedCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
+    <phone:PhoneApplicationPage.Resources>
+        <converter:RssTextTrimmer x:Key="RssTextTrimmer" />
+        <converter:IsStringNotNullConveter x:Key="IsStringNotNullConverter" />
+        <converter:IsStringNullOrEmptyToVisibleConveter x:Key="IsStringNullOrEmptyToVisibleConverter" />
+        <converter:BooleanToCollapseConverter x:Key="BooleanToCollapseConverter" />
+        <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <converter:ColorToVisibilityConverter x:Key="ColorToVisibilityConverter" />
+        <converter:ColorToCollapseConverter x:Key="ColorToCollapseConverter" />
+        <converter:NullOrEmptyVisibilityConverter x:Key="NullOrEmptyVisibilityConverter" />
+        <converter:VisibilityConverter x:Key="VisibilityConverter" />
+        <converter:BooleanInverterConverter x:Key="InvConv" />
+        <converter:TextPlainConverter x:Key="TextPlainConverter" />
+        <converter:IsoToLocalTimeConverter x:Key="IsoToLocalTimeConverter"/>
+        <Style TargetType="ScrollBar">
+            <Setter Property="Background" Value="SteelBlue" />
+            <Setter Property="Foreground" Value="SteelBlue" />
+            <Setter Property="BorderBrush" Value="SteelBlue" />
+        </Style>
+    </phone:PhoneApplicationPage.Resources>
+
+    <Grid Background="{Binding SelectedBackground, Source={StaticResource Settings}}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <controls:Pivot SelectionChanged="Pivot_SelectionChanged">
+            <controls:Pivot.TitleTemplate>
+                <DataTemplate>
+                    <TextBlock Text="THE HINDU" FontSize="{StaticResource PhoneFontSizeNormal}" Foreground="{StaticResource HinduBrush}" />
+                </DataTemplate>
+            </controls:Pivot.TitleTemplate>
+
+            <controls:PivotItem x:Name="HeadLines">
+                <controls:PivotItem.Header>
+                    <TextBlock Grid.Row="0" Style="{StaticResource TextBlockPanoramaItemStyle}" Text="headline" Foreground="{StaticResource HinduBrush}" />
+                </controls:PivotItem.Header>
+                <Grid Margin="-10" x:Name="HeadLinesGrid">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Margin="0,200,0,0"
+                        Width="480" Visibility="{Binding IsRefreshingTopStoriesArticles, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+                        <TextBlock Foreground="Gray" TextAlignment="Center"
+                            Text="Loading..."  FontSize="{StaticResource PhoneFontSizeMediumLarge}" />
+
+                        <!--<ProgressBar Foreground="{StaticResource HinduBrush}" Margin="24,20"
+                            IsIndeterminate="{Binding IsRefreshingTopStoriesArticles}" />-->
+                    </StackPanel>
+
+                    <Grid Grid.Row="0" toolkit:TiltEffect.IsTiltEnabled="True" Visibility="{Binding IsRefreshingTopStoriesArticles, Converter={StaticResource BooleanToCollapseConverter}}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Tap">
+                                <i:InvokeCommandAction Command="{Binding ReadArticleCommand}"
+                                    CommandParameter="{Binding HeadLineArticle}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+
+                        <Image Grid.Row="0" Stretch="Uniform" VerticalAlignment="Top" Visibility="{Binding HeadLineArticle.HdThumbnail, Converter={StaticResource IsStringNotNullConverter}}">
+                            <Image.Source>
+                                <BitmapImage UriSource="{Binding HeadLineArticle.HdThumbnail}" CreateOptions="BackgroundCreation" DecodePixelWidth="400" DecodePixelType="Logical" />
+                            </Image.Source>
+                        </Image>
+
+                        <Image Grid.Row="0" Stretch="Fill" Visibility="{Binding HeadLineArticle.HdThumbnail, Converter={StaticResource IsStringNullOrEmptyToVisibleConverter}}">
+                            <Image.Source>
+                                <BitmapImage UriSource="/Assets/Icons/background.png" />
+                            </Image.Source>
+                        </Image>
+                        <StackPanel Grid.Row="0" Margin="0,-20,0,0" VerticalAlignment="Bottom" Style="{StaticResource StackPanelSummaryStyle}">
+                            <TextBlock FontSize="26" Height="100" Style="{StaticResource TextBlockSummaryStyle}" Text="{Binding HeadLineArticle.Title}" />
+                            <TextBlock FontSize="20" Height="70" Style="{StaticResource TextBlockSummaryStyle}" Text="{Binding HeadLineArticle.PublishDate, Converter={StaticResource IsoToLocalTimeConverter}}" />
+                        </StackPanel>
+                    </Grid>
+                    <windowsPhone8:AdMediatorControl x:Name="MainHeadLineAd" HorizontalAlignment="Center" Height="50" Id="AdMediator-Id-815570B8-C142-4FDD-8A7C-1CAD824B6DDE" Margin="0,0,0,0" Grid.Row="0" VerticalAlignment="Bottom" Width="320" />
+                    <StackPanel Grid.Row="1" />
+                </Grid>
+            </controls:PivotItem>
+
+            <controls:PivotItem x:Name="BreakingNews">
+                <controls:PivotItem.Header>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Style="{StaticResource TextBlockPanoramaItemStyle}" Text="breaking news" Foreground="{StaticResource HinduBrush}" />
+                    </Grid>
+                </controls:PivotItem.Header>
+                <Grid x:Name="BreakingNewsGrid">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Margin="0,10,0,0"
+                        Width="480"  Grid.Row="0" Visibility="{Binding IsRefreshingBreakingNewsArticles, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+                        <TextBlock Foreground="Gray" TextAlignment="Center"
+                            Text="Loading..."  FontSize="{StaticResource PhoneFontSizeMediumLarge}" />
+
+                        <ProgressBar Foreground="{StaticResource HinduBrush}" Margin="24,20"
+                            IsIndeterminate="{Binding IsRefreshingBreakingNewsArticles}" />
+                    </StackPanel>
+                    <Controls:LongListSelector x:Name="breakingNewsList" Grid.Row="1" ItemsSource="{Binding BreakingNewsArticles}"
+                        Margin="-10,10,0,0"
+                        SelectedItem="{Binding CurrentArticle, Mode=TwoWay}" ScrollViewer.VerticalScrollBarVisibility="Auto">
+
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Tap">
+                                <i:InvokeCommandAction Command="{Binding ReadCurrentArticleCommand}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <i:Interaction.Behaviors>
+                            <helper:IncrementalLoadingBehavior LoadCommand="{Binding LoadBreakingNewsCommand}" />
+                        </i:Interaction.Behaviors>
+
+                        <phone:LongListSelector.ListHeader>
+                            <Grid Margin="12,-90,12,30" Height="60" VerticalAlignment="Top">
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="Load more" />
+                                </StackPanel>
+                            </Grid>
+                        </phone:LongListSelector.ListHeader>
+
+                        <phone:LongListSelector.ListFooter>
+                            <Grid Margin="12,30,12,0" Height="60" VerticalAlignment="Bottom">
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="Load more" />
+                                </StackPanel>
+                            </Grid>
+                        </phone:LongListSelector.ListFooter>
+
+                        <Controls:LongListSelector.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="{StaticResource PhoneChromeBrush}" BorderThickness="0,0,0,1" Padding="2,2,2,10">
+                                    <Grid Margin="0,5,0,5" toolkit:TiltEffect.IsTiltEnabled="True">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Grid.Row="0" Grid.ColumnSpan="2" FontSize="{StaticResource PhoneFontSizeMedium}" x:Name="feedTitle" Text="{Binding Title}" TextWrapping="Wrap" Margin="5" Foreground="{StaticResource HinduBrush}" HorizontalAlignment="Left" FontWeight="Medium" />
+                                        <Image Grid.Row="1" MaxWidth="150" MaxHeight="150" Margin="5,0,0,0" Visibility="{Binding Thumbnail, Converter={StaticResource IsStringNotNullConverter}}">
+                                            <Image.Source>
+                                                <BitmapImage UriSource="{Binding Thumbnail}" CreateOptions="BackgroundCreation" DecodePixelHeight="100" DecodePixelType="Logical" />
+                                            </Image.Source>
+                                        </Image>
+                                        <TextBlock Grid.Row="1" Grid.Column="1" Margin="5" Foreground="{Binding SelectedForeground, Source={StaticResource Settings}}" Text="{Binding Description, ConverterParameter=200, Converter={StaticResource TextPlainConverter}}" Style="{StaticResource ArticleSummaryStyle}" />
+                                        <TextBlock Grid.Row="2" Grid.Column="1" Foreground="Gray" Text="{Binding DateDifference}" HorizontalAlignment="Right" FontSize="{StaticResource PhoneFontSizeSmall}" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </Controls:LongListSelector.ItemTemplate>
+                    </Controls:LongListSelector>
+
+                    <windowsPhone8:AdMediatorControl x:Name="MainBreakingNewsAd" HorizontalAlignment="Center" Height="50" Id="AdMediator-Id-F15A1B89-3B2D-40A2-BFA4-B7A1A9A3B11D" Grid.Row="1" VerticalAlignment="Bottom" Width="320" Margin="0,0,0,0" />
+                    <StackPanel Grid.Row="2" />
+                </Grid>
+            </controls:PivotItem>
+
+            <controls:PivotItem x:Name="TopStories">
+                <controls:PivotItem.Header>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Style="{StaticResource TextBlockPanoramaItemStyle}" Text="top stories" Foreground="{StaticResource HinduBrush}" />
+                    </Grid>
+                </controls:PivotItem.Header>
+                <Grid x:Name="TopStoriesGrid">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Margin="0,10,0,0"
+                        Width="480"  Grid.Row="0" Visibility="{Binding IsRefreshingTopStoriesArticles, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+                        <TextBlock Foreground="Gray" TextAlignment="Center"
+                            Text="Loading..."  FontSize="{StaticResource PhoneFontSizeMediumLarge}" />
+
+                        <ProgressBar Foreground="{StaticResource HinduBrush}" Margin="24,20"
+                            IsIndeterminate="{Binding IsRefreshingTopStoriesArticles}" />
+                    </StackPanel>
+
+                    <Controls:LongListSelector Grid.Row="1" ItemsSource="{Binding TopStoriesArticles}"
+                        Margin="-10,10,-10,0"
+                        SelectedItem="{Binding CurrentArticle, Mode=TwoWay}" ScrollViewer.VerticalScrollBarVisibility="Auto">
+
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Tap">
+                                <i:InvokeCommandAction Command="{Binding ReadCurrentArticleCommand}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+
+                        <i:Interaction.Behaviors>
+                            <helper:IncrementalLoadingBehavior LoadCommand="{Binding LoadTopStoriesCommand}" />
+                        </i:Interaction.Behaviors>
+
+                        <Controls:LongListSelector.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="{StaticResource PhoneChromeBrush}" BorderThickness="0,0,0,1" Padding="2,2,2,10">
+                                    <Grid Margin="0,5,0,5" toolkit:TiltEffect.IsTiltEnabled="True">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Grid.Row="0" Grid.ColumnSpan="2" FontSize="{StaticResource PhoneFontSizeMedium}" x:Name="feedTitle" Text="{Binding Title}" TextWrapping="Wrap" Margin="5" Foreground="{StaticResource HinduBrush}" HorizontalAlignment="Left" FontWeight="Medium" />
+                                        <Image Grid.Row="1" MaxWidth="150" MaxHeight="150" Margin="5,0,0,0" Visibility="{Binding Thumbnail, Converter={StaticResource IsStringNotNullConverter}}">
+                                            <Image.Source>
+                                                <BitmapImage UriSource="{Binding Thumbnail}" CreateOptions="BackgroundCreation" DecodePixelHeight="100" DecodePixelType="Logical" />
+                                            </Image.Source>
+                                        </Image>
+                                        <TextBlock Grid.Row="1" Grid.Column="1" Margin="5" Foreground="{Binding SelectedForeground, Source={StaticResource Settings}}" Text="{Binding Description, ConverterParameter=200, Converter={StaticResource TextPlainConverter}}" Style="{StaticResource ArticleSummaryStyle}" />
+                                        <TextBlock Grid.Row="2" Grid.Column="1" Foreground="Gray" Text="{Binding DateDifference}" HorizontalAlignment="Right" FontSize="{StaticResource PhoneFontSizeSmall}" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </Controls:LongListSelector.ItemTemplate>
+                    </Controls:LongListSelector>
+
+                    <windowsPhone8:AdMediatorControl x:Name="MainTopStoriesAd" HorizontalAlignment="Center" Height="50" Id="AdMediator-Id-ED9C271B-947C-4430-907B-3650E06075D4" Grid.Row="1" Margin="0,0,0,0" VerticalAlignment="Bottom" Width="320" />
+                    <StackPanel Grid.Row="2" />
+                </Grid>
+            </controls:PivotItem>
+
+            <controls:PivotItem>
+                <controls:PivotItem.Header>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Style="{StaticResource TextBlockPanoramaItemStyle}" Text="favorites" Foreground="{StaticResource HinduBrush}" />
+                    </Grid>
+                </controls:PivotItem.Header>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Loaded">
+                        <i:InvokeCommandAction Command="{Binding LoadFavCategoriesCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+
+                <Grid x:Name="FavoritesGrid">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Visibility="{Binding IsNoFavorites, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <TextBlock FontSize="{StaticResource PhoneFontSizeMediumLarge}" Foreground="{Binding SelectedForeground, Source={StaticResource Settings}}" Text="To quick access, you can add/remove your favorite news category from Categories section." TextWrapping="Wrap" />
+                    </StackPanel>
+                    <StackPanel Visibility="{Binding IsNoFavorites, Converter={StaticResource BooleanToCollapseConverter}}">
+                        <StackPanel Margin="0,10,0,0"
+                        Width="480"  Grid.Row="0" Visibility="{Binding IsRefreshingCategories, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+                            <TextBlock Foreground="Gray" TextAlignment="Center"
+                            Text="Loading..."  FontSize="{StaticResource PhoneFontSizeMediumLarge}" />
+
+                            <ProgressBar Foreground="{StaticResource HinduBrush}" Margin="24,20"
+                            IsIndeterminate="{Binding IsRefreshingTopStoriesArticles}" />
+                        </StackPanel>
+
+                        <phone:LongListSelector x:Name="FavLongList" Margin="5" Visibility="{Binding IsRefreshingCategories, Converter={StaticResource BooleanToCollapseConverter}}" ItemsSource="{Binding FavCategories,Mode=TwoWay}" Height="600" Width="450" ScrollViewer.VerticalScrollBarVisibility="Visible">
+                            <phone:LongListSelector.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid toolkit:TiltEffect.IsTiltEnabled="True">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Visibility="{Binding SelectedForeground, Source={StaticResource Settings}, Converter={StaticResource ColorToCollapseConverter }}" VerticalAlignment="Center">
+                                            <codingforFuncontrols:RoundButton BorderBrush="{Binding SelectedForeground, Source={StaticResource Settings}}" ButtonHeight="60" ButtonWidth="60" Content="" Visibility="{Binding IsPinned, Converter={StaticResource BooleanToVisibilityConverter}}" Click="Button_Click" VerticalAlignment="Center">
+                                                <Button.Background>
+                                                    <ImageBrush ImageSource="/Assets/Icons/light.Favs.png" Stretch="UniformToFill" />
+                                                </Button.Background>
+                                            </codingforFuncontrols:RoundButton>
+                                        </StackPanel>
+
+                                        <StackPanel Visibility="{Binding SelectedForeground, Source={StaticResource Settings}, Converter={StaticResource ColorToVisibilityConverter }}" VerticalAlignment="Center">
+                                            <codingforFuncontrols:RoundButton BorderBrush="{Binding SelectedForeground, Source={StaticResource Settings}}" ButtonHeight="60" ButtonWidth="60" Content="" Visibility="{Binding IsPinned, Converter={StaticResource BooleanToVisibilityConverter}}" Click="Button_Click">
+                                                <Button.Background>
+                                                    <ImageBrush ImageSource="/Assets/Icons/dark.Favs.png" Stretch="UniformToFill" />
+                                                </Button.Background>
+                                            </codingforFuncontrols:RoundButton>
+                                        </StackPanel>
+
+                                        <TextBlock Grid.Column="1" FontSize="30" Text="{Binding CategoryName}" Foreground="{Binding SelectedForeground, Source={StaticResource Settings}}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="5" Tap="Category_Tap" />
+                                    </Grid>
+                                </DataTemplate>
+                            </phone:LongListSelector.ItemTemplate>
+                        </phone:LongListSelector>
+                    </StackPanel>
+                    <windowsPhone8:AdMediatorControl x:Name="MainFavoritesAd" Grid.Row="1" HorizontalAlignment="Center" Height="50" Id="AdMediator-Id-BD994870-0BA5-4171-BF18-29B05501D933" Margin="0,0,0,0" VerticalAlignment="Bottom" Width="320" />
+                    <StackPanel Grid.Row="1" />
+                </Grid>
+            </controls:PivotItem>
+
+            <controls:PivotItem>
+                <controls:PivotItem.Header>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Style="{StaticResource TextBlockPanoramaItemStyle}" Text="categories" Foreground="{StaticResource HinduBrush}" />
+                    </Grid>
+                </controls:PivotItem.Header>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Loaded">
+                        <i:InvokeCommandAction Command="{Binding LoadCategoiresCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <Grid x:Name="CategoriesGrid" Grid.Row="1" Margin="12,0,12,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <StackPanel Margin="0,10,0,0"
+                        Width="480"  Grid.Row="0" Visibility="{Binding IsRefreshingCategories, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+                        <TextBlock Foreground="Gray" TextAlignment="Center"
+                            Text="Loading..."  FontSize="{StaticResource PhoneFontSizeMediumLarge}" />
+
+                        <ProgressBar Foreground="{StaticResource HinduBrush}" Margin="24,20"
+                            IsIndeterminate="{Binding IsRefreshingTopStoriesArticles}" />
+                    </StackPanel>
+                    <phone:LongListSelector x:Name="CategoriesList" Margin="5" Visibility="{Binding IsRefreshingCategories, Converter={StaticResource BooleanToCollapseConverter}}" ItemsSource="{Binding ListOfCategories, Mode=TwoWay}" Height="600" Width="450" ScrollViewer.VerticalScrollBarVisibility="Visible">
+                        <phone:LongListSelector.ItemTemplate>
+                            <DataTemplate>
+                                <Grid toolkit:TiltEffect.IsTiltEnabled="True">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Visibility="{Binding SelectedForeground, Source={StaticResource Settings}, Converter={StaticResource ColorToCollapseConverter }}" VerticalAlignment="Center">
+                                        <codingforFuncontrols:RoundButton BorderBrush="{Binding SelectedForeground, Source={StaticResource Settings}}" Content="" Visibility="{Binding IsPinned, Converter={StaticResource BooleanToVisibilityConverter}}" Click="Button_Click" ButtonHeight="60" ButtonWidth="60" VerticalAlignment="Center">
+                                            <Button.Background>
+                                                <ImageBrush ImageSource="/Assets/Icons/light.Favs.png" Stretch="UniformToFill" />
+                                            </Button.Background>
+                                        </codingforFuncontrols:RoundButton>
+
+                                        <codingforFuncontrols:RoundButton BorderBrush="{Binding SelectedForeground, Source={StaticResource Settings}}" Content="" ButtonHeight="60" ButtonWidth="60" Visibility="{Binding IsPinned, Converter={StaticResource BooleanToCollapseConverter}}" Click="Button_Click">
+                                            <Button.Background>
+                                                <ImageBrush ImageSource="/Assets/Icons/light.Favs.addto.png" Stretch="UniformToFill" />
+                                            </Button.Background>
+                                        </codingforFuncontrols:RoundButton>
+                                    </StackPanel>
+
+                                    <StackPanel Visibility="{Binding SelectedForeground, Source={StaticResource Settings}, Converter={StaticResource ColorToVisibilityConverter }}" VerticalAlignment="Center">
+                                        <codingforFuncontrols:RoundButton BorderBrush="{Binding SelectedForeground, Source={StaticResource Settings}}" Content="" Visibility="{Binding IsPinned, Converter={StaticResource BooleanToVisibilityConverter}}" Click="Button_Click" ButtonHeight="60" ButtonWidth="60">
+                                            <Button.Background>
+                                                <ImageBrush ImageSource="/Assets/Icons/dark.Favs.png" Stretch="UniformToFill" />
+                                            </Button.Background>
+                                        </codingforFuncontrols:RoundButton>
+
+                                        <codingforFuncontrols:RoundButton BorderBrush="{Binding SelectedForeground, Source={StaticResource Settings}}" Content="" Visibility="{Binding IsPinned, Converter={StaticResource BooleanToCollapseConverter}}" Click="Button_Click" ButtonHeight="60" ButtonWidth="60">
+                                            <Button.Background>
+                                                <ImageBrush ImageSource="/Assets/Icons/dark.Favs.addto.png" Stretch="UniformToFill" />
+                                            </Button.Background>
+                                        </codingforFuncontrols:RoundButton>
+                                    </StackPanel>
+
+                                    <TextBlock Grid.Column="1" FontSize="30" Foreground="{Binding SelectedForeground, Source={StaticResource Settings}}" Text="{Binding CategoryName}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,5,0,5"  Tap="Category_Tap" Visibility="{Binding IsGroup, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                    <TextBlock Grid.Column="1" FontSize="30" Foreground="{Binding SelectedForeground, Source={StaticResource Settings}}" Text="{Binding CategoryName}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="40,0,0,0"  Tap="Category_Tap" Visibility="{Binding IsGroup, Converter={StaticResource BooleanToCollapseConverter}}" />
+                                </Grid>
+                            </DataTemplate>
+                        </phone:LongListSelector.ItemTemplate>
+                    </phone:LongListSelector>
+                    <windowsPhone8:AdMediatorControl x:Name="MainCategoriesAd" Grid.Row="1" HorizontalAlignment="Center" Height="50" Id="AdMediator-Id-7238942F-33CC-45AA-BB26-1D3B0A2DF5DF" Margin="0,0,0,0" VerticalAlignment="Bottom" Width="320" />
+                    <StackPanel Grid.Row="2" />
+                </Grid>
+            </controls:PivotItem>
+        </controls:Pivot>
+    </Grid>
+
+    <phone:PhoneApplicationPage.ApplicationBar>
+
+        <shell:ApplicationBar IsMenuEnabled="True"
+                          IsVisible="True"
+                          Mode="Minimized"
+                          Opacity="1"
+                          BackgroundColor ="{StaticResource HinduCustomeColor}" ForegroundColor="white">
+            <shell:ApplicationBarIconButton Text="refresh" IconUri="/Assets/Shares/Refresh.png" />
+            <shell:ApplicationBarIconButton Text="Settings" IconUri="/Assets/Shares/settings.png" />
+            <shell:ApplicationBarIconButton Text="saved articles" IconUri="/Assets/Shares/savedarticles.png" />
+            <shell:ApplicationBarIconButton Text="about" IconUri="/Assets/Shares/about.png" />
+            <shell:ApplicationBar.MenuItems>
+                <shell:ApplicationBarMenuItem Text="my other apps" Click="MyOtherApps_Click" />
+            </shell:ApplicationBar.MenuItems>
+        </shell:ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>
+
+    <i:Interaction.Behaviors>
+        <appBarUtils:AppBarItemCommand Command="{Binding RefreshCommand}" Id="refresh" Type="Button" />
+        <appBarUtils:AppBarItemCommand Command="{Binding ShowSavedArticlesCommand}"
+                                   Id="saved articles" Type="Button" />
+
+        <appBarUtils:AppBarItemCommand Command="{Binding ShowSettingsCommand}"
+                                   Id="Settings"
+                                   Type="Button" />
+
+        <appBarUtils:AppBarItemCommand Command="{Binding ShowRateTheAppCommand}"
+                                   Id="rate &amp; review" />
+
+        <appBarUtils:AppBarItemCommand Command="{Binding ShowShareTheAppCommand}"
+                                   Id="share the app"
+                                   Type="MenuItem" />
+
+        <appBarUtils:AppBarItemCommand Command="{Binding ShowAboutCommand}"
+                                   Id="about" Type="Button" />
+    </i:Interaction.Behaviors>
+</phone:PhoneApplicationPage>

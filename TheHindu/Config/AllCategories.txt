@@ -1,0 +1,223 @@
+{
+  "ListOfCategories": {
+    "-xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "-xmlns:xsd": "http://www.w3.org/2001/XMLSchema",
+    "Category": [
+      {
+        "CategoryName": "Top Stories",
+        "IsPinned": "No",
+        "IsGroup": "No"
+      },
+      {
+        "CategoryName": "Breaking News",
+        "IsPinned": "No",
+        "IsGroup": "No"
+      },
+      {
+        "CategoryName": "National",
+        "IsPinned": "No",
+        "IsGroup": "No"
+      },
+      {
+        "CategoryName": "International",
+        "IsPinned": "No",
+        "IsGroup": "No"
+      },
+      {
+        "CategoryName": "Sports",
+        "IsPinned": "No",
+        "IsGroup": "Yes",
+        "Group": {
+          "Category": [
+            {
+              "CategoryName": "Cricket",
+              "IsPinned": "No",
+              "IsGroup": "No"
+            },
+            {
+              "CategoryName": "Football",
+              "IsPinned": "No",
+              "IsGroup": "No"
+            },
+            {
+              "CategoryName": "Hockey",
+              "IsPinned": "No",
+              "IsGroup": "No"
+            },
+            {
+              "CategoryName": "Tennis",
+              "IsPinned": "No",
+              "IsGroup": "No"
+            },
+            {
+              "CategoryName": "Races",
+              "IsPinned": "No",
+              "IsGroup": "No"
+            }
+          ]
+        }
+      },
+      {
+        "CategoryName": "Features",
+        "IsPinned": "No",
+        "IsGroup": "Yes",
+        "Group": {
+          "Category": [
+            {
+              "CategoryName": "Friday Review",
+              "IsPinned": "No",
+              "IsGroup": "No"
+            },
+            {
+              "CategoryName": "Education Plus",
+              "IsPinned": "No",
+              "IsGroup": "No"
+            },
+            {
+              "CategoryName": "Sunday Magazine",
+              "IsPinned": "No",
+              "IsGroup": "No"
+            },
+            {
+              "CategoryName": "Cinema Plus",
+              "IsPinned": "No",
+              "IsGroup": "No"
+            },
+            {
+              "CategoryName": "Habitat",
+              "IsPinned": "No",
+              "IsGroup": "No"
+            },
+            {
+              "CategoryName": "Metro Plus",
+              "IsPinned": "No",
+              "IsGroup": "No"
+            }
+          ]
+        }
+      },
+      {
+        "CategoryName": "Business",
+        "IsPinned": "No",
+        "IsGroup": "Yes",
+        "Group": {
+          "Category": [
+            {
+              "CategoryName": "Industry",
+              "IsPinned": "No",
+              "IsGroup": "No"
+            },
+            {
+              "CategoryName": "Economy",
+              "IsPinned": "No",
+              "IsGroup": "No"
+            },
+            {
+              "CategoryName": "Market",
+              "IsPinned": "No",
+              "IsGroup": "No"
+            }
+          ]
+        }
+      },
+      {
+        "CategoryName": "Opinion",
+        "IsPinned": "No",
+        "IsGroup": "Yes",
+        "Group": {
+          "Category": [
+            {
+              "CategoryName": "Lead",
+              "IsPinned": "No",
+              "IsGroup": "No"
+            },
+            {
+              "CategoryName": "Editorial",
+              "IsPinned": "No",
+              "IsGroup": "No"
+            },
+            {
+              "CategoryName": "Op-Ed",
+              "IsPinned": "No",
+              "IsGroup": "No"
+            },
+            {
+              "CategoryName": "Blogs",
+              "IsPinned": "No",
+              "IsGroup": "No"
+            }
+          ]
+        }
+      },
+      {
+        "CategoryName": "Cities",
+        "IsPinned": "No",
+        "IsGroup": "Yes",
+        "Group": {
+          "Category": [
+            {
+              "CategoryName": "Chennai",
+              "IsPinned": "No",
+              "IsGroup": "No"
+            },
+            {
+              "CategoryName": "Bangalore",
+              "IsPinned": "No",
+              "IsGroup": "No"
+            },
+            {
+              "CategoryName": "Delhi",
+              "IsPinned": "No",
+              "IsGroup": "No"
+            },
+            {
+              "CategoryName": "Hyderabad",
+              "IsPinned": "No",
+              "IsGroup": "No"
+            },
+            {
+              "CategoryName": "Thiruvananthapuram",
+              "IsPinned": "No",
+              "IsGroup": "No"
+            },
+            {
+              "CategoryName": "Kochi",
+              "IsPinned": "No",
+              "IsGroup": "No"
+            },
+            {
+              "CategoryName": "Madurai",
+              "IsPinned": "No",
+              "IsGroup": "No"
+            },
+            {
+              "CategoryName": "Mangalore",
+              "IsPinned": "No",
+              "IsGroup": "No"
+            },
+            {
+              "CategoryName": "Coimbatore",
+              "IsPinned": "No",
+              "IsGroup": "No"
+            },
+            {
+              "CategoryName": "Vishakapatnam",
+              "IsPinned": "No",
+              "IsGroup": "No"
+            },
+            {
+              "CategoryName": "Vijayawada",
+              "IsPinned": "No",
+              "IsGroup": "No"
+            },
+            {
+              "CategoryName": "Tiruchirapalli",
+              "IsPinned": "No",
+              "IsGroup": "No"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

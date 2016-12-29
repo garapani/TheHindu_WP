@@ -1,0 +1,56 @@
+﻿<phone:PhoneApplicationPage
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+	xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+	xmlns:windowsPhone8="clr-namespace:Microsoft.AdMediator.WindowsPhone8;assembly=Microsoft.AdMediator.WindowsPhone8"
+	x:Class="TheHindu.Views.AboutUs"
+	FontFamily="{StaticResource PhoneFontFamilyNormal}"
+	FontSize="{StaticResource PhoneFontSizeNormal}"
+	Foreground="{StaticResource PhoneForegroundBrush}"
+	SupportedOrientations="Portrait" Orientation="Portrait"
+	mc:Ignorable="d"
+	shell:SystemTray.IsVisible="false">
+
+    <Grid Background="{Binding SelectedBackground, Source={StaticResource Settings}}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0">
+            <Border Background="{StaticResource HinduBrush}">
+                <TextBlock Text="The Hindu" Margin="5" FontSize="{StaticResource PhoneFontSizeMedium}" Foreground="White" />
+            </Border>
+            <TextBlock Text="about" Margin="10" FontSize="{StaticResource PhoneFontSizeLarge}" Foreground="{StaticResource HinduBrush}" />
+        </StackPanel>
+
+        <Grid Grid.Row="1" Margin="12">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0">
+                <TextBlock Foreground="{Binding SelectedForeground, Source={StaticResource Settings}}" Text="Version: 2.3.1.0" />
+                <TextBlock>
+					<Run />
+                </TextBlock>
+                <TextBlock Foreground="{Binding SelectedForeground, Source={StaticResource Settings}}" Text="This app helps  you in reading hindu news paper. It helps in update to date with the happenings around the world.This app is neither sponsored nor endorsed by The Hindu. Logos and content used in the app are competly property of Hindu Newspaper." TextWrapping="Wrap" />
+                <TextBlock>
+					<Run />
+                </TextBlock>
+                <TextBlock Foreground="{Binding SelectedForeground, Source={StaticResource Settings}}" Text="Please share your thoughts on the app or if any improvments needed. Thanks for using the app." TextWrapping="Wrap" />
+            </StackPanel>
+            <StackPanel Orientation="Vertical" Margin="0,12" Grid.Row="1" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <Button Foreground="{Binding SelectedForeground, Source={StaticResource Settings}}" BorderBrush="{Binding SelectedForeground, Source={StaticResource Settings}}" Content="My Apps" Click="MyApps_Click" />
+                <Button Foreground="{Binding SelectedForeground, Source={StaticResource Settings}}" BorderBrush="{Binding SelectedForeground, Source={StaticResource Settings}}" Content="Rate &amp; Review" Click="Rate_Click" />
+                <Button Foreground="{Binding SelectedForeground, Source={StaticResource Settings}}" BorderBrush="{Binding SelectedForeground, Source={StaticResource Settings}}"  Content="Share" Click="Share_Click" />
+                <Button Foreground="{Binding SelectedForeground, Source={StaticResource Settings}}" BorderBrush="{Binding SelectedForeground, Source={StaticResource Settings}}"  Content="Suggestions" Click="Feedback_Click" />
+                <!--<Button Foreground="{Binding Source={StaticResource settings}, Path=SelectedForeground}" BorderBrush="{Binding Source={StaticResource settings}, Path=SelectedForeground}"  Content="Send Crash Logs" Click="CrashLogs_Click" />-->
+            </StackPanel>
+        </Grid>
+    </Grid>
+</phone:PhoneApplicationPage>

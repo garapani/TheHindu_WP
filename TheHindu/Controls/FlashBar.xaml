@@ -1,0 +1,17 @@
+﻿<UserControl x:Class="TheHindu.Controls.FlashBar"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    Background="Transparent">
+    <Rectangle x:Name="TheRect" Visibility="Collapsed">
+        <Rectangle.Fill>
+            <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                <GradientStop Color="{Binding Source={StaticResource PhoneBackgroundBrush}, Path=Color}" Offset="0" />
+                <GradientStop Color="{Binding Source={StaticResource PhoneAccentBrush}, Path=Color}" Offset="0.5" />
+                <GradientStop Color="{Binding Source={StaticResource PhoneBackgroundBrush}, Path=Color}" Offset="1" />
+            </LinearGradientBrush>
+        </Rectangle.Fill>
+    </Rectangle>
+</UserControl>
