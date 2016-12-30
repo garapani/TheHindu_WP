@@ -38,64 +38,51 @@ namespace TheHindu.ViewModel
         #endregion Fields
 
         #region Properties
+        private bool _hasInternet;
+        public bool HasInternet { get { return _hasInternet; } private set { this.Set<bool>(ref _hasInternet, value); } }
+        private bool _isCachedModeMessageDisplayed;
+        public bool IsCachedModeMessageDisplayed { get { return _isCachedModeMessageDisplayed; } set { this.Set<bool>(ref _isCachedModeMessageDisplayed, value); } }
 
-        public bool HasInternet { get; private set; }
+        private bool _isRefreshingArticles;
+        public bool IsRefreshingArticles { get { return _isRefreshingArticles; } set { this.Set<bool>(ref _isRefreshingArticles, value); } }
 
-        public bool IsCachedModeMessageDisplayed { get; set; }
+        private Article _headLineArticle;
+        public Article HeadLineArticle { get { return _headLineArticle; } private set { this.Set<Article>(ref _headLineArticle, value); } }
 
-        public bool IsRefreshingArticles { get; set; }
+        private ObservableCollection<Article> _topStoriesArticles;
+        public ObservableCollection<Article> TopStoriesArticles { get { return _topStoriesArticles; } set { this.Set<ObservableCollection<Article>>(ref _topStoriesArticles, value); } }
+        private bool _isRefreshingTopStoriesArticles;
+        public bool IsRefreshingTopStoriesArticles { get { return _isRefreshingTopStoriesArticles; } set { this.Set<bool>(ref _isRefreshingTopStoriesArticles, value); } }
 
-        public Article HeadLineArticle { get; private set; }
-
-        public ObservableCollection<Article> TopStoriesArticles { get; set; }
-
-        public bool IsRefreshingTopStoriesArticles { get; set; }
-
-        public ObservableCollection<Article> BreakingNewsArticles { get; set; }
-
-        public bool IsRefreshingBreakingNewsArticles { get; set; }
+        private ObservableCollection<Article> _breakingNewsArticles;
+        public ObservableCollection<Article> BreakingNewsArticles { get { return _breakingNewsArticles; } set { this.Set<ObservableCollection<Article>>(ref _breakingNewsArticles, value); } }
+        private bool _isRefreshingBreakingNewsArticles;
+        public bool IsRefreshingBreakingNewsArticles { get { return _isRefreshingBreakingNewsArticles; } set { this.Set<bool>(ref _isRefreshingBreakingNewsArticles, value); } }
 
         //public bool IsDataSavingMode { get; set; }
-        public Article CurrentArticle { get; set; }
+        private Article _currentArticle;
+        public Article CurrentArticle { get { return _currentArticle; } set { this.Set<Article>(ref _currentArticle, value); } }
 
         private ObservableCollection<CategoryDetailsModel> _favCategories;
+        public ObservableCollection<CategoryDetailsModel> FavCategories { get { return _favCategories; } set { this.Set<ObservableCollection<CategoryDetailsModel>>(ref _favCategories, value); } }
 
-        public ObservableCollection<CategoryDetailsModel> FavCategories
-        {
-            get
-            {
-                return _favCategories;
-            }
-            set
-            {
-                _favCategories = value;
-                RaisePropertyChanged("FavCategories");
-            }
-        }
-
-        public bool IsRefreshingCategories { get; set; }
+        private bool _isRefreshingCategories = false;
+        public bool IsRefreshingCategories { get { return _isRefreshingCategories; } set { this.Set<bool>(ref _isRefreshingCategories, value); } }
 
         private ObservableCollection<CategoryDetailsModel> _listOfcategories;
+        public ObservableCollection<CategoryDetailsModel> ListOfCategories { get { return _listOfcategories; } set { this.Set<ObservableCollection<CategoryDetailsModel>>(ref _listOfcategories, value); } }
 
-        public ObservableCollection<CategoryDetailsModel> ListOfCategories
-        {
-            get
-            {
-                return _listOfcategories;
-            }
-            set
-            {
-                _listOfcategories = value;
-                RaisePropertyChanged("ListOfCategories");
-            }
-        }
+        private bool _isNoFavorites;
+        public bool IsNoFavorites { get { return _isNoFavorites; } set { this.Set<bool>(ref _isNoFavorites, value); } }
 
-        public bool IsNoFavorites { get; set; }
+        private bool _isRefreshing;
+        public bool IsRefreshing { get { return _isRefreshing; } set { this.Set<bool>(ref _isRefreshing, value); } }
 
-        public bool IsRefreshing { get; set; }
+        private string _activePage;
+        public string ActivePage { get { return _activePage; } set { this.Set<string>(ref _activePage, value); } }
+        #endregion Properties
 
-        public string ActivePage { get; set; }
-
+        #region relay commands
         public RelayCommand LoadedCommand { get; private set; }
 
         public RelayCommand LoadTopStoriesCommand { get; private set; }
@@ -121,8 +108,7 @@ namespace TheHindu.ViewModel
         public RelayCommand ShowShareTheAppCommand { get; private set; }
 
         public RelayCommand ShowRateTheAppCommand { get; private set; }
-
-        #endregion Properties
+        #endregion relay commands
 
         #region Constructor
 
@@ -835,25 +821,31 @@ namespace TheHindu.ViewModel
         {
             try
             {
+                var newArticles = new List<Article>();
                 if (_dataService.TopStoriesArticles == null || _dataService.TopStoriesArticles.Count <= 0) return;
                 if (_dataService.TopStoriesArticles.Count >= 10)
                 {
-                    var newArticles = new List<Article>(_dataService.TopStoriesArticles.GetRange(0, 10));
-                    if (newArticles.Count <= 0) return;
-                    newArticles = newArticles.OrderBy(x => x.PublishDate).ToList();
-                    if (TopStoriesArticles == null)
-                    {
-                        TopStoriesArticles = new ObservableCollection<Article>();
-                    }
-                    foreach (var article in newArticles)
-                    {
-                        if (TopStoriesArticles.FirstOrDefault(o => o.ArticleId == article.ArticleId) == null)
-                        {
-                            TopStoriesArticles.Insert(0, article);
-                        }
-                    }
-                    //newArticles.ForEach(o => TopStoriesArticles.Add(o));
+                    newArticles = new List<Article>(_dataService.TopStoriesArticles.GetRange(0, 10));
                 }
+                else
+                {
+                    newArticles = new List<Article>(_dataService.TopStoriesArticles);
+                }
+
+                if (newArticles.Count <= 0) return;
+                newArticles = newArticles.OrderBy(x => x.PublishDate).ToList();
+                if (TopStoriesArticles == null)
+                {
+                    TopStoriesArticles = new ObservableCollection<Article>();
+                }
+                foreach (var article in newArticles)
+                {
+                    if (TopStoriesArticles.FirstOrDefault(o => o.ArticleId == article.ArticleId) == null)
+                    {
+                        TopStoriesArticles.Insert(0, article);
+                    }
+                }
+
             }
             catch (Exception exception)
             {
@@ -868,22 +860,28 @@ namespace TheHindu.ViewModel
         {
             try
             {
+                var newArticles = new List<Article>();
                 if (_dataService.BreakingNewsArticles == null || _dataService.BreakingNewsArticles.Count <= 0) return;
                 if (_dataService.BreakingNewsArticles.Count >= 10)
                 {
-                    var newArticles = new List<Article>(_dataService.BreakingNewsArticles.GetRange(0, 10));
-                    if (newArticles.Count <= 0) return;
-                    newArticles = newArticles.OrderBy(x => x.PublishDate).ToList();
-                    if (BreakingNewsArticles == null)
+                    newArticles = new List<Article>(_dataService.BreakingNewsArticles.GetRange(0, 10));
+                }
+                else
+                {
+                    newArticles = new List<Article>(_dataService.BreakingNewsArticles);
+                }
+
+                if (newArticles.Count <= 0) return;
+                newArticles = newArticles.OrderBy(x => x.PublishDate).ToList();
+                if (BreakingNewsArticles == null)
+                {
+                    BreakingNewsArticles = new ObservableCollection<Article>();
+                }
+                foreach (var article in newArticles)
+                {
+                    if (BreakingNewsArticles.FirstOrDefault(o => o.ArticleId == article.ArticleId) == null)
                     {
-                        BreakingNewsArticles = new ObservableCollection<Article>();
-                    }
-                    foreach (var article in newArticles)
-                    {
-                        if (BreakingNewsArticles.FirstOrDefault(o => o.ArticleId == article.ArticleId) == null)
-                        {
-                            BreakingNewsArticles.Insert(0, article);
-                        }
+                        BreakingNewsArticles.Insert(0, article);
                     }
                 }
             }

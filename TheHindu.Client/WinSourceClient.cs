@@ -30,15 +30,7 @@ namespace TheHindu.Client
                 var httpClient = new HttpClient(handler);
                 httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/600.1.3 (KHTML, like Gecko) Version/8.0 Mobile/12A4345d Safari/600.1.4");
                 var tempString = await httpClient.GetStringAsync(categoryUrl);
-
-                if (categoryUrl.ToLower().Contains("temp-th.appspot"))
-                {
-                    return ParseArticlesAsync(tempString, true);
-                }
-                else
-                {
-                    return ParseArticlesAsync(tempString, false);
-                }
+                return ParseArticlesAsync(tempString);
             }
             catch (Exception exception)
             {
@@ -100,7 +92,7 @@ namespace TheHindu.Client
                 var httpClient = new HttpClient(handler);
                 httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/600.1.3 (KHTML, like Gecko) Version/8.0 Mobile/12A4345d Safari/600.1.4");
                 var tempString = await httpClient.GetStringAsync(categoryUrl);
-                return ParseArticlesAsync(tempString, false);
+                return ParseArticlesAsync(tempString);
             }
             catch (Exception exception)
             {
@@ -127,7 +119,7 @@ namespace TheHindu.Client
                 var httpClient = new HttpClient(handler);
                 httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/600.1.3 (KHTML, like Gecko) Version/8.0 Mobile/12A4345d Safari/600.1.4");
                 var tempString = await httpClient.GetStringAsync(categoryUrl);
-                return ParseArticlesAsync(tempString, false);
+                return ParseArticlesAsync(tempString);
             }
             catch (Exception exception)
             {
@@ -139,53 +131,24 @@ namespace TheHindu.Client
             return null;
         }
 
-        private List<Article> ParseArticlesAsync(string articlesString, bool http = true)
+        private List<Article> ParseArticlesAsync(string articlesString)
         {
             var listOfArticles = new List<Article>();
-            if (http == true)
+            JsonSerializerSettings settings = new JsonSerializerSettings
             {
-                try
-                {
-                    JsonSerializerSettings settings = new JsonSerializerSettings
-                    {
-                        DateFormatHandling = DateFormatHandling.IsoDateFormat,
-                        DateTimeZoneHandling = DateTimeZoneHandling.Utc
-                    };
+                DateFormatHandling = DateFormatHandling.IsoDateFormat,
+                DateTimeZoneHandling = DateTimeZoneHandling.Utc
+            };
 
-                    var newArticles = JsonConvert.DeserializeObject<RootObject>(articlesString, settings);
-                    if (newArticles != null && newArticles.NewsItem != null && newArticles.NewsItem.Count > 0)
-                    {
-                        var temp = from article in newArticles.NewsItem
-                                   select new Article(article.WebUrl, HttpUtility.HtmlDecode(article.HeadLine).Replace("&nbsp;", ""), HttpUtility.HtmlDecode(article.Story).Replace("&nbsp;", ""), article.ArticleDate, article.ByLine, !string.IsNullOrEmpty(article.Photo) && article.Photo.Contains("g.jpg") ? article.Photo.Replace("g.jpg", "c.jpg") : article.Photo, !string.IsNullOrEmpty(article.Photo) && article.Photo.Contains("g.jpg") ? article.Photo.Replace("g.jpg", "e.jpg") : article.Photo, article.PhotoCaption, article.Story);
-                        listOfArticles = temp.ToList<Article>();
-                    }
-                }
-                catch (Exception exception)
-                {
-                    if (Debugger.IsAttached)
-                    {
-                        Debug.WriteLine("WinSourceClient:" + exception);
-                    }
-                }
-            }
-            else
+            var newArticles = JsonConvert.DeserializeObject<List<Article>>(articlesString, settings);
+            if (newArticles != null)
             {
-                JsonSerializerSettings settings = new JsonSerializerSettings
+                newArticles.ForEach(o =>
                 {
-                    DateFormatHandling = DateFormatHandling.IsoDateFormat,
-                    DateTimeZoneHandling = DateTimeZoneHandling.Utc
-                };
-
-                var newArticles = JsonConvert.DeserializeObject<List<Article>>(articlesString, settings);
-                if (newArticles != null)
-                {
-                    newArticles.ForEach(o =>
-                    {
-                        o.Author = o.Author.Replace("\n", string.Empty);
-                        o.HdThumbnail = string.IsNullOrEmpty(o.Thumbnail) ? string.Empty : o.Thumbnail.Replace("i.jpg", "g.jpg");
-                    });
-                    listOfArticles = newArticles;
-                }
+                    o.Author = string.IsNullOrEmpty(o.Author) ? string.Empty : o.Author.Replace("\n", string.Empty);
+                    o.HdThumbnail = string.IsNullOrEmpty(o.Thumbnail) ? string.Empty : o.Thumbnail.Replace("i.jpg", "g.jpg");
+                });
+                listOfArticles = newArticles;
             }
             return listOfArticles;
         }

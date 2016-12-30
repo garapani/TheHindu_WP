@@ -75,28 +75,27 @@
 
                 <controls:LongListSelector.ItemTemplate>
                     <DataTemplate>
-
-                        <Border BorderBrush="{StaticResource PhoneChromeBrush}" BorderThickness="0,0,0,1" Padding="2,2,2,10">
-                            <Grid Margin="0,5,0,5" toolkit:TiltEffect.IsTiltEnabled="True">
+                        <Border BorderBrush="{StaticResource PhoneChromeBrush}" BorderThickness="0,0,0,1" Padding="2,2,2,10" VerticalAlignment="Center">
+                            <Grid Margin="0,5,0,5" toolkit:TiltEffect.IsTiltEnabled="True" MinHeight="120" VerticalAlignment="Center">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
+                                <!--<Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <TextBlock Grid.Row="0" Grid.ColumnSpan="2" FontSize="{StaticResource PhoneFontSizeMedium}" Name="feedTitle" Text="{Binding Title}" TextWrapping="Wrap" Margin="12,0,0,5" HorizontalAlignment="Left" Foreground="{StaticResource HinduBrush}" FontWeight="Medium" />
+                                </Grid.RowDefinitions>-->
+                                <TextBlock Grid.Column="1" FontSize="{StaticResource PhoneFontSizeMediumLarge}" Name="feedTitle" Text="{Binding Title}" TextWrapping="Wrap" Margin="12,0,0,5" HorizontalAlignment="Left" Foreground="{StaticResource HinduBrush}" FontWeight="Medium" />
 
-                                <Image Grid.Row="1" MaxWidth="150" MaxHeight="150" Margin="5,0,0,0" Visibility="{Binding Thumbnail, Converter={StaticResource IsStringNotNullConverter}}">
+                                <Image Grid.Column="0" MaxWidth="150" MaxHeight="150" Margin="5,0,0,0" Visibility="{Binding Thumbnail, Converter={StaticResource IsStringNotNullConverter}}">
                                     <Image.Source>
                                         <BitmapImage UriSource="{Binding Thumbnail}" CreateOptions="BackgroundCreation" DecodePixelHeight="100" DecodePixelType="Logical" />
                                     </Image.Source>
                                 </Image>
 
-                                <TextBlock Grid.Row="1" Grid.Column="1"  Margin="5" Foreground="{Binding Source={StaticResource Settings}, Path=SelectedForeground}" Text="{Binding Description, Converter={StaticResource RssTextTrimmer}}" Style="{StaticResource ArticleSummaryStyle}" />
-                                <TextBlock Grid.Row="2" Grid.Column="1" Foreground="Gray" Text="{Binding DateDifference}" HorizontalAlignment="Right" FontSize="{StaticResource PhoneFontSizeSmall}" />
+                                <!--<TextBlock Grid.Row="1" Grid.Column="1"  Margin="5" Foreground="{Binding Source={StaticResource Settings}, Path=SelectedForeground}" Text="{Binding Description, Converter={StaticResource RssTextTrimmer}}" Style="{StaticResource ArticleSummaryStyle}" />
+                                <TextBlock Grid.Row="2" Grid.Column="1" Foreground="Gray" Text="{Binding DateDifference}" HorizontalAlignment="Right" FontSize="{StaticResource PhoneFontSizeSmall}" />-->
                             </Grid>
                         </Border>
                     </DataTemplate>

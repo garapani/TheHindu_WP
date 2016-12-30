@@ -189,12 +189,44 @@ namespace TheHindu.ViewModel
             }
         }
 
-        public ObservableCollection<Article> Articles { get; private set; }
+        private ObservableCollection<Article> _articles;
+        public ObservableCollection<Article> Articles { get
+            {
+                return _articles;
+            }
+            private set
+            {
+                this.Set<ObservableCollection<Article>>(ref _articles, value);
+            }
+        }
 
-        public bool HasInternet { get; internal set; }
+        private bool _hasInternet;
+        public bool HasInternet {
+            get { return _hasInternet; }
+            internal set
+            {
+                this.Set<bool>(ref _hasInternet, value);
+            }
+        }
 
-        public bool IsCachedModeMessageDisplayed { get; set; }
+        private bool _isCachedModeMessageDisplayed = true;
+        public bool IsCachedModeMessageDisplayed { get
+            {
+                return _isCachedModeMessageDisplayed;
+            }
+            set
+            {
+                this.Set<bool>(ref _isCachedModeMessageDisplayed, value);
+            }
+        }
 
-        public bool IsRefreshingArticles { get; set; }
+        private bool _isRefreshingArticles = false;
+        public bool IsRefreshingArticles {
+            get { return _isRefreshingArticles; }
+            set
+            {
+                this.Set<bool>(ref _isRefreshingArticles, value);
+            }
+        }
     }
 }
