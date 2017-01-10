@@ -190,7 +190,10 @@ namespace TheHindu.ViewModel
         }
 
         private ObservableCollection<Article> _articles;
-        public ObservableCollection<Article> Articles { get
+
+        public ObservableCollection<Article> Articles
+        {
+            get
             {
                 return _articles;
             }
@@ -201,7 +204,9 @@ namespace TheHindu.ViewModel
         }
 
         private bool _hasInternet;
-        public bool HasInternet {
+
+        public bool HasInternet
+        {
             get { return _hasInternet; }
             internal set
             {
@@ -210,7 +215,10 @@ namespace TheHindu.ViewModel
         }
 
         private bool _isCachedModeMessageDisplayed = true;
-        public bool IsCachedModeMessageDisplayed { get
+
+        public bool IsCachedModeMessageDisplayed
+        {
+            get
             {
                 return _isCachedModeMessageDisplayed;
             }
@@ -221,7 +229,9 @@ namespace TheHindu.ViewModel
         }
 
         private bool _isRefreshingArticles = false;
-        public bool IsRefreshingArticles {
+
+        public bool IsRefreshingArticles
+        {
             get { return _isRefreshingArticles; }
             set
             {

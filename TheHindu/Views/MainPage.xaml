@@ -40,7 +40,7 @@
         <converter:VisibilityConverter x:Key="VisibilityConverter" />
         <converter:BooleanInverterConverter x:Key="InvConv" />
         <converter:TextPlainConverter x:Key="TextPlainConverter" />
-        <converter:IsoToLocalTimeConverter x:Key="IsoToLocalTimeConverter"/>
+        <converter:IsoToLocalTimeConverter x:Key="IsoToLocalTimeConverter" />
         <Style TargetType="ScrollBar">
             <Setter Property="Background" Value="SteelBlue" />
             <Setter Property="Foreground" Value="SteelBlue" />
@@ -75,8 +75,8 @@
                         <TextBlock Foreground="Gray" TextAlignment="Center"
                             Text="Loading..."  FontSize="{StaticResource PhoneFontSizeMediumLarge}" />
 
-                        <!--<ProgressBar Foreground="{StaticResource HinduBrush}" Margin="24,20"
-                            IsIndeterminate="{Binding IsRefreshingTopStoriesArticles}" />-->
+                        <ProgressBar Foreground="{StaticResource HinduBrush}" Margin="24,20"
+                            IsIndeterminate="{Binding IsRefreshingTopStoriesArticles}" />
                     </StackPanel>
 
                     <Grid Grid.Row="0" toolkit:TiltEffect.IsTiltEnabled="True" Visibility="{Binding IsRefreshingTopStoriesArticles, Converter={StaticResource BooleanToCollapseConverter}}">
@@ -187,7 +187,7 @@
                                             </Image.Source>
                                         </Image>
                                         <TextBlock Grid.Row="1" Grid.Column="1" Margin="5" Foreground="{Binding SelectedForeground, Source={StaticResource Settings}}" Text="{Binding Description, ConverterParameter=200, Converter={StaticResource TextPlainConverter}}" Style="{StaticResource ArticleSummaryStyle}" />
-                                        <TextBlock Grid.Row="2" Grid.Column="1" Foreground="Gray" Text="{Binding DateDifference}" HorizontalAlignment="Right" FontSize="{StaticResource PhoneFontSizeSmall}" />
+                                        <!--<TextBlock Grid.Row="2" Grid.Column="1" Foreground="Gray" Text="{Binding DateDifference}" HorizontalAlignment="Right" FontSize="{StaticResource PhoneFontSizeSmall}" />-->
                                     </Grid>
                                 </Border>
                             </DataTemplate>
@@ -260,7 +260,7 @@
                                             </Image.Source>
                                         </Image>
                                         <TextBlock Grid.Row="1" Grid.Column="1" Margin="5" Foreground="{Binding SelectedForeground, Source={StaticResource Settings}}" Text="{Binding Description, ConverterParameter=200, Converter={StaticResource TextPlainConverter}}" Style="{StaticResource ArticleSummaryStyle}" />
-                                        <TextBlock Grid.Row="2" Grid.Column="1" Foreground="Gray" Text="{Binding DateDifference}" HorizontalAlignment="Right" FontSize="{StaticResource PhoneFontSizeSmall}" />
+                                        <!--<TextBlock Grid.Row="2" Grid.Column="1" Foreground="Gray" Text="{Binding DateDifference}" HorizontalAlignment="Right" FontSize="{StaticResource PhoneFontSizeSmall}" />-->
                                     </Grid>
                                 </Border>
                             </DataTemplate>

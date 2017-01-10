@@ -96,7 +96,6 @@
   <ItemGroup>
     <Compile Include="Article.cs" />
     <Compile Include="ArticleDataContext.cs" />
-    <Compile Include="ArticleHTTP.cs" />
     <Compile Include="BindableBase.cs" />
     <Compile Include="CategoryDetailsDataContext.cs" />
     <Compile Include="CategoryDetailsModel.cs" />

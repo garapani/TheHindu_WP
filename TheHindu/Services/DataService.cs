@@ -103,7 +103,7 @@ namespace TheHindu.Services
         public async Task LoadAsync()
         {
             try
-            {                
+            {
                 TaskFactory factory = new TaskFactory();
                 await factory.StartNew(async () => await DatabaseOperations.GetInstance().DeleteExpiredArticlesAsync());
                 await factory.StartNew(async () => await LoadCategoryDetailsAsync());
@@ -183,7 +183,7 @@ namespace TheHindu.Services
                         var topNews = await _theHinduClient.GetTopArticlesAsync(page);
                         if (topNews != null && topNews.Count > 0)
                         {
-                            HeadLineArticle = topNews[0];                            
+                            HeadLineArticle = topNews[0];
                             if (HeadLineArticle != null && !string.IsNullOrEmpty(HeadLineArticle.Thumbnail))
                             {
                                 HeadLineArticle.HdThumbnail = HeadLineArticle.Thumbnail.Replace("i.jpg", "e.jpg");
@@ -284,7 +284,6 @@ namespace TheHindu.Services
         public async Task<bool> CanRefreshCategoryAsync(string category)
         {
             var canFetch = true;
-
             var categoryObj = await DatabaseOperations.GetInstance().GetCategoryDetailAsync(category);
             if (categoryObj == null) return true;
             var diff = DateTime.UtcNow - categoryObj.LastFetchedTime;
@@ -302,7 +301,7 @@ namespace TheHindu.Services
             Articles.Clear();
             var listOfArticles = new List<Article>();
             var oldArticles = await DatabaseOperations.GetInstance().GetCategoryArticlesAsync(category);
-            if (oldArticles != null && oldArticles.Count != 0)
+            if (oldArticles != null && oldArticles.Count > 0)
             {
                 Articles.AddRange(oldArticles);
                 listOfArticles.AddRange(oldArticles);
@@ -324,6 +323,20 @@ namespace TheHindu.Services
                 var categories = await _theHinduClient.GetCategoryDetailsAsync();
                 if (categories != null)
                 {
+                    //First remove the depricated categories.
+                    var categoriesFromDB = await DatabaseOperations.GetInstance().GetCategoriesAsync();
+                    if (categoriesFromDB != null && categoriesFromDB.Count > 0)
+                    {
+                        foreach (var category in categoriesFromDB)
+                        {
+                            if (categories.Find(o => o.CategoryName.ToLower() == category.CategoryName.ToLower()) == null)
+                            {
+                                await DatabaseOperations.GetInstance().DeleteCategoryAsync(category.CategoryName);
+                            }
+                        }
+                    }
+
+                    //update or insert the new categories.
                     foreach (var category in categories)
                     {
                         await DatabaseOperations.GetInstance().UpdateCategoryAsync(category);
@@ -449,11 +462,6 @@ namespace TheHindu.Services
                 }
             }
             return tempArticle;
-        }
-
-        private async Task<Article> GetArticleFromDbAsync(string Id, string category = null)
-        {
-            return await DatabaseOperations.GetInstance().GetArticleAsync(Id, category);
         }
 
         public async Task<SlideShowDetails> GetSlideShowDetailsAsync(string id)
@@ -710,26 +718,6 @@ namespace TheHindu.Services
             }
         }
 
-        #endregion Methods
-
-        #region Events
-
-        public event EventHandler<DataRefreshedEventArgs> OnDataRefreshed;
-
-        public event EventHandler<ArticleChangedEventArgs> OnArticleChanged;
-
-        public event EventHandler<ArticleChangedEventArgs> OnPreviousArticleChanged;
-
-        public event EventHandler<ArticleChangedEventArgs> OnNextArticleChanged;
-
-        public event EventHandler OnSavedArticlesChanged;
-
-        public event EventHandler<ArticleChangedEventArgs> OnSavedArticleChanged;
-
-        #endregion Events
-
-        #region Private Methods
-
         public async Task LoadTopStoriesArticlesAsync()
         {
             if (TopStoriesArticles == null)
@@ -812,6 +800,127 @@ namespace TheHindu.Services
                 }
             }
         }
+
+        public Article GetPreviousArticle()
+        {
+            try
+            {
+                if (CurrentArticle != null && CurrentArticle.Category == TopStories)
+                {
+                    if (TopStoriesArticles == null)
+                        return null;
+
+                    var index = TopStoriesArticles.FindIndex(o => o.ArticleId == CurrentArticle.ArticleId);
+                    return index == 0
+                        ? TopStoriesArticles[TopStoriesArticles.Count - 1]
+                        : TopStoriesArticles[index - 1];
+                }
+                else if (CurrentArticle != null && CurrentArticle.Category == BreakingNews)
+                {
+                    if (BreakingNewsArticles == null)
+                        return null;
+                    var index = BreakingNewsArticles.FindIndex(o => o.ArticleId == CurrentArticle.ArticleId);
+                    return index == 0 ? BreakingNewsArticles[BreakingNewsArticles.Count - 1] : BreakingNewsArticles[index - 1];
+                }
+                else
+                {
+                    if (Articles == null)
+                        return null;
+                    var index = Articles.FindIndex(o => o.ArticleId == CurrentArticle.ArticleId);
+                    return index == 0 ? Articles[Articles.Count - 1] : Articles[index - 1];
+                }
+            }
+            catch (Exception exception)
+            {
+                if (Debugger.IsAttached)
+                {
+                    Debug.WriteLine("DataService:" + exception);
+                }
+            }
+            return null;
+        }
+
+        public Article GetNextArticle()
+        {
+            try
+            {
+                if (CurrentArticle != null && CurrentArticle.Category == TopStories)
+                {
+                    if (TopStoriesArticles == null)
+                        return null;
+
+                    var index = TopStoriesArticles.FindIndex(o => o.ArticleId == CurrentArticle.ArticleId);
+                    return index == TopStoriesArticles.Count - 1 ? TopStoriesArticles[0] : TopStoriesArticles[index + 1];
+                }
+                else if (CurrentArticle != null && CurrentArticle.Category == BreakingNews)
+                {
+                    if (BreakingNewsArticles == null)
+                        return null;
+                    var index = BreakingNewsArticles.FindIndex(o => o.ArticleId == CurrentArticle.ArticleId);
+                    return index == BreakingNewsArticles.Count - 1 ? BreakingNewsArticles[0] : BreakingNewsArticles[index + 1];
+                }
+                else
+                {
+                    if (Articles == null)
+                        return null;
+                    var index = Articles.FindIndex(o => o.ArticleId == CurrentArticle.ArticleId);
+                    return index == Articles.Count - 1 ? Articles[0] : Articles[index + 1];
+                }
+            }
+            catch (Exception exception)
+            {
+                if (Debugger.IsAttached)
+                {
+                    Debug.WriteLine("DataService:" + exception);
+                }
+            }
+            return null;
+        }
+
+        public async Task LoadSavedArticlesAsync()
+        {
+            if (SavedArticles == null)
+                SavedArticles = new List<Article>();
+            try
+            {
+                var articles = await DatabaseOperations.GetInstance().GetSavedArticlesAsync();
+
+                if (articles == null || articles.Count <= 0) return;
+                articles = articles.OrderByDescending(o => o.PublishDate).ToList();
+                foreach (var article in articles.Where(article => SavedArticles.Find(o => o.ArticleId == article.ArticleId) == null))
+                {
+                    SavedArticles.Add(article);
+                }
+            }
+            catch (Exception exception)
+            {
+                if (Debugger.IsAttached)
+                {
+                    Debug.WriteLine("DataService:" + exception);
+                }
+            }
+            NotifySavedArticlesChanged();
+        }
+
+        #endregion Methods
+
+        #region Events
+
+        public event EventHandler<DataRefreshedEventArgs> OnDataRefreshed;
+
+        public event EventHandler<ArticleChangedEventArgs> OnArticleChanged;
+
+        public event EventHandler<ArticleChangedEventArgs> OnPreviousArticleChanged;
+
+        public event EventHandler<ArticleChangedEventArgs> OnNextArticleChanged;
+
+        public event EventHandler OnSavedArticlesChanged;
+
+        public event EventHandler<ArticleChangedEventArgs> OnSavedArticleChanged;
+
+        #endregion Events
+
+        #region Private Methods
 
         private async Task LoadBreakingNewsArticlesAsync()
         {
@@ -963,31 +1072,6 @@ namespace TheHindu.Services
             UpdateArticleMoveStates();
         }
 
-        public async Task LoadSavedArticlesAsync()
-        {
-            if (SavedArticles == null)
-                SavedArticles = new List<Article>();
-            try
-            {
-                var articles = await DatabaseOperations.GetInstance().GetSavedArticlesAsync();
-
-                if (articles == null || articles.Count <= 0) return;
-                articles = articles.OrderByDescending(o => o.PublishDate).ToList();
-                foreach (var article in articles.Where(article => SavedArticles.Find(o => o.ArticleId == article.ArticleId) == null))
-                {
-                    SavedArticles.Add(article);
-                }
-            }
-            catch (Exception exception)
-            {
-                if (Debugger.IsAttached)
-                {
-                    Debug.WriteLine("DataService:" + exception);
-                }
-            }
-            NotifySavedArticlesChanged();
-        }
-
         private async Task SaveSavedArticlesAsync()
         {
             try
@@ -1014,8 +1098,6 @@ namespace TheHindu.Services
             UpdateSavedArticleMoveStates();
             NotifyCurrentSavedArticleChanged(CurrentSavedArticle);
         }
-
-        #endregion Private Methods
 
         private void InitializeLiveTile()
         {
@@ -1106,82 +1188,6 @@ namespace TheHindu.Services
             }
         }
 
-        public Article GetPreviousArticle()
-        {
-            try
-            {
-                if (CurrentArticle != null && CurrentArticle.Category == TopStories)
-                {
-                    if (TopStoriesArticles == null)
-                        return null;
-
-                    var index = TopStoriesArticles.FindIndex(o => o.ArticleId == CurrentArticle.ArticleId);
-                    return index == 0
-                        ? TopStoriesArticles[TopStoriesArticles.Count - 1]
-                        : TopStoriesArticles[index - 1];
-                }
-                else if (CurrentArticle != null && CurrentArticle.Category == BreakingNews)
-                {
-                    if (BreakingNewsArticles == null)
-                        return null;
-                    var index = BreakingNewsArticles.FindIndex(o => o.ArticleId == CurrentArticle.ArticleId);
-                    return index == 0 ? BreakingNewsArticles[BreakingNewsArticles.Count - 1] : BreakingNewsArticles[index - 1];
-                }
-                else
-                {
-                    if (Articles == null)
-                        return null;
-                    var index = Articles.FindIndex(o => o.ArticleId == CurrentArticle.ArticleId);
-                    return index == 0 ? Articles[Articles.Count - 1] : Articles[index - 1];
-                }
-            }
-            catch (Exception exception)
-            {
-                if (Debugger.IsAttached)
-                {
-                    Debug.WriteLine("DataService:" + exception);
-                }
-            }
-            return null;
-        }
-
-        public Article GetNextArticle()
-        {
-            try
-            {
-                if (CurrentArticle != null && CurrentArticle.Category == TopStories)
-                {
-                    if (TopStoriesArticles == null)
-                        return null;
-
-                    var index = TopStoriesArticles.FindIndex(o => o.ArticleId == CurrentArticle.ArticleId);
-                    return index == TopStoriesArticles.Count - 1 ? TopStoriesArticles[0] : TopStoriesArticles[index + 1];
-                }
-                else if (CurrentArticle != null && CurrentArticle.Category == BreakingNews)
-                {
-                    if (BreakingNewsArticles == null)
-                        return null;
-                    var index = BreakingNewsArticles.FindIndex(o => o.ArticleId == CurrentArticle.ArticleId);
-                    return index == BreakingNewsArticles.Count - 1 ? BreakingNewsArticles[0] : BreakingNewsArticles[index + 1];
-                }
-                else
-                {
-                    if (Articles == null)
-                        return null;
-                    var index = Articles.FindIndex(o => o.ArticleId == CurrentArticle.ArticleId);
-                    return index == Articles.Count - 1 ? Articles[0] : Articles[index + 1];
-                }
-            }
-            catch (Exception exception)
-            {
-                if (Debugger.IsAttached)
-                {
-                    Debug.WriteLine("DataService:" + exception);
-                }
-            }
-            return null;
-        }
-
         private void UpdateArticleMoveStates()
         {
             try
@@ -1225,6 +1231,13 @@ namespace TheHindu.Services
                 }
             }
         }
+
+        private async Task<Article> GetArticleFromDbAsync(string Id, string category = null)
+        {
+            return await DatabaseOperations.GetInstance().GetArticleAsync(Id, category);
+        }
+
+        #endregion Private Methods
 
         #region Notify Events
 

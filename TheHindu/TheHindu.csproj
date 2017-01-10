@@ -416,7 +416,6 @@
     <None Include="Properties\WMAppManifest.xml">
       <SubType>Designer</SubType>
     </None>
-    <None Include="TheHindu_2015_03_11_20_51_30.sap" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Icons\AppLogoBusinessLine.png">
@@ -566,7 +565,7 @@
   <ProjectExtensions />
   <!-- <UsingTask TaskName="NotifyPropertyWeaverMsBuildTask.WeavingTask" AssemblyFile="$(SolutionDir)Tools\NotifyPropertyWeaverMsBuildTask.dll" /> -->
   <!-- <Target Name="AfterCompile"> -->
-    <!-- <NotifyPropertyWeaverMsBuildTask.WeavingTask /> -->
+  <!-- <NotifyPropertyWeaverMsBuildTask.WeavingTask /> -->
   <!-- </Target> -->
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

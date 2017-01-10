@@ -38,6 +38,7 @@ namespace TheHindu.ViewModel
         #endregion Fields
 
         #region Properties
+
         private bool _hasInternet;
         public bool HasInternet { get { return _hasInternet; } private set { this.Set<bool>(ref _hasInternet, value); } }
         private bool _isCachedModeMessageDisplayed;
@@ -61,6 +62,7 @@ namespace TheHindu.ViewModel
 
         //public bool IsDataSavingMode { get; set; }
         private Article _currentArticle;
+
         public Article CurrentArticle { get { return _currentArticle; } set { this.Set<Article>(ref _currentArticle, value); } }
 
         private ObservableCollection<CategoryDetailsModel> _favCategories;
@@ -80,9 +82,11 @@ namespace TheHindu.ViewModel
 
         private string _activePage;
         public string ActivePage { get { return _activePage; } set { this.Set<string>(ref _activePage, value); } }
+
         #endregion Properties
 
         #region relay commands
+
         public RelayCommand LoadedCommand { get; private set; }
 
         public RelayCommand LoadTopStoriesCommand { get; private set; }
@@ -108,6 +112,7 @@ namespace TheHindu.ViewModel
         public RelayCommand ShowShareTheAppCommand { get; private set; }
 
         public RelayCommand ShowRateTheAppCommand { get; private set; }
+
         #endregion relay commands
 
         #region Constructor
@@ -200,6 +205,7 @@ namespace TheHindu.ViewModel
                              }
                              IsRefreshingBreakingNewsArticles = false;
                              break;
+
                          case DataType.Categories:
                              IsRefreshingCategories = true;
                              if (ListOfCategories != null && ListOfCategories.Count != 0)
@@ -316,10 +322,7 @@ namespace TheHindu.ViewModel
                     else
                     {
                         IsRefreshingTopStoriesArticles = false;
-                        //DispatcherHelper.UIDispatcher.BeginInvoke(() =>
-                        //{
                         _rootFrame.Navigate(new Uri("/Views/NetworkError.xaml", UriKind.Relative));
-                        //});
                     }
                 }
                 else if (ActivePage == DataType.BreakingNewsArticles.ToString())
@@ -333,10 +336,7 @@ namespace TheHindu.ViewModel
                     else
                     {
                         IsRefreshingBreakingNewsArticles = false;
-                        //DispatcherHelper.UIDispatcher.BeginInvoke(() =>
-                        //{
                         _rootFrame.Navigate(new Uri("/Views/NetworkError.xaml", UriKind.Relative));
-                        //});
                     }
                 }
                 else if (ActivePage == favCategoryPage || ActivePage == categoriesPage)
@@ -443,7 +443,6 @@ namespace TheHindu.ViewModel
                     });
                 }
             }
-            //_dataService.SetCurrentArticle(HeadLineArticle);
         }
 
         private void ReadCurrentArticle()
@@ -667,32 +666,30 @@ namespace TheHindu.ViewModel
 
         private async void LoadOrRefreshCategories()
         {
-            DispatcherHelper.UIDispatcher.BeginInvoke(() =>
-                        {
-                            IsRefreshingCategories = true;
-                        });
+            DispatcherHelper.UIDispatcher.BeginInvoke(() => { IsRefreshingCategories = true; });
             try
             {
-                DispatcherHelper.UIDispatcher.BeginInvoke(() =>
-                        {
-                            IsRefreshingCategories = false;
-                            if (ListOfCategories == null || ListOfCategories.Count != 0) return;
-                        });
-                var categories = new List<CategoryDetailsModel>();
-                foreach (var category in await _dataService.GetCategoryDetailsAsync())
+                if (ListOfCategories == null || ListOfCategories.Count != 0)
                 {
-                    categories.Add(category);
+                    DispatcherHelper.UIDispatcher.BeginInvoke(() => { IsRefreshingCategories = false; });
+                    return;
                 }
-                if (categories != null && categories.Count >= 1)
+                var categories = new List<CategoryDetailsModel>();
+                var categoriesFromDS = await _dataService.GetCategoryDetailsAsync();
+                if (categoriesFromDS != null && categoriesFromDS.Count > 0)
                 {
+                    foreach (var category in categoriesFromDS)
+                    {
+                        categories.Add(category);
+                    }
                     DispatcherHelper.UIDispatcher.BeginInvoke(() =>
+                    {
+                        ListOfCategories.Clear();
+                        foreach (var category in categories.OrderBy(o => o.Order))
                         {
-                            ListOfCategories.Clear();
-                            foreach (var category in categories.OrderBy(o => o.Order))
-                            {
-                                ListOfCategories.Add(category);
-                            }
-                        });
+                            ListOfCategories.Add(category);
+                        }
+                    });
                 }
             }
             catch (Exception exception)
@@ -702,10 +699,7 @@ namespace TheHindu.ViewModel
                     Debug.WriteLine("MainViewModel:" + exception);
                 }
             }
-            DispatcherHelper.UIDispatcher.BeginInvoke(() =>
-                        {
-                            IsRefreshingCategories = false;
-                        });
+            DispatcherHelper.UIDispatcher.BeginInvoke(() => { IsRefreshingCategories = false; });
         }
 
         private async void RefreshCategories()
@@ -781,7 +775,6 @@ namespace TheHindu.ViewModel
                     var readBuffer = new byte[4096];
                     var bytesRead = -1;
 
-                    // Copy the file from the installation folder to the local folder.
                     while ((bytesRead = input.Read(readBuffer, 0, readBuffer.Length)) > 0)
                     {
                         output.Write(readBuffer, 0, bytesRead);
@@ -806,7 +799,6 @@ namespace TheHindu.ViewModel
                     HeadLineArticle = _dataService.HeadLineArticle;
                     UpdateNotifications(HeadLineArticle);
                 }
-
             }
             catch (Exception exception)
             {
@@ -845,7 +837,6 @@ namespace TheHindu.ViewModel
                         TopStoriesArticles.Insert(0, article);
                     }
                 }
-
             }
             catch (Exception exception)
             {

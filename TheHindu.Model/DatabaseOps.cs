@@ -242,6 +242,32 @@ namespace TheHindu.Model
             }
         }
 
+        public async Task DeleteCategoryAsync(string categoryName)
+        {
+            if (_dbConnection != null)
+            {
+                try
+                {
+                    var allcategories = from category in _dbConnection.Table<CategoryDetailsModel>() where category.CategoryName.ToLower() == categoryName.ToLower() select category;
+                    if (allcategories != null)
+                    {
+                        foreach (var category in await allcategories.ToListAsync())
+                        {
+                            await _dbConnection.DeleteAsync(category);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e.ToString());
+                }
+            }
+            else
+            {
+                Debug.WriteLine("failed to get sqlite connection");
+            }
+        }
+
         public async Task DeleteExpiredArticlesAsync()
         {
             if (_dbConnection != null)
